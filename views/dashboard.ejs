@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Mood Tracker</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <%- include('partials/header') %>
+  
+  <div class="container">
+    <h1>Welcome, <%= user.name %></h1>
+    
+    <section class="dashboard-section">
+      <h2>Today's Affirmation</h2>
+      <% if (todaysAffirmation) { %>
+        <div class="affirmation-card">
+          <p><%= todaysAffirmation.content %></p>
+          <small>Created: <%= new Date(todaysAffirmation.date).toLocaleDateString() %></small>
+        </div>
+      <% } else { %>
+        <p>You haven't added an affirmation today.</p>
+        <a href="/affirmations/new" class="btn">Add Affirmation</a>
+      <% } %>
+    </section>
+    
+    <section class="dashboard-section">
+      <h2>Mood Tracking</h2>
+      <div class="mood-chart-container">
+        <canvas id="moodChart"></canvas>
+      </div>
+      <% if (!todaysMood) { %>
+        <a href="/moods/new" class="btn">Log Today's Mood</a>
+      <% } %>
+    </section>
+  </div>
+  
+  <!-- Load the external JS file -->
+  <script src="/js/moodChart.js"></script>
+  
+  <!-- Pass data to the function in a way that avoids EJS parsing issues -->
+  <script>
+    // Create a global variable to hold the data
+    window.moodAppData = {
+      dates: JSON.parse('<%- JSON.stringify(moodDates || []) %>'),
+      ratings: JSON.parse('<%- JSON.stringify(moodRatings || []) %>')
+    };
+    
+    // Initialize the chart with the data
+    document.addEventListener('DOMContentLoaded', function() {
+      initMoodChart(window.moodAppData.dates, window.moodAppData.ratings);
+    });
+  </script>
+</body>
+</html>
