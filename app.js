@@ -27,6 +27,14 @@ app.use('/', require('./routes/index')); //Mounts the index router on the root p
 app.use('/moods', require('./routes/moods')); //mounts the moods router (handles mood tracking)
 app.use('/affirmations', require('./routes/affirmations')); //mounts the affirmations (handles affirmations-related functionality)
 
+// API status endpoint for testing connectivity
+app.get('/api/status', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'API is working'
+  });
+});
+
 //start server
 const PORT = process.env.PORT || 3000; //set port to environment variable or default to 3000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`)); //starts express server on the port 3000
