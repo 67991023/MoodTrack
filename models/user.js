@@ -1,3 +1,4 @@
+/*
 const mongoose = require('mongoose'); // Import mongoose for MongoDB object modeling
 const bcrypt = require('bcryptjs'); // Import bcrypt for password hashing
 const UserSchema = new mongoose.Schema({ // schema defines the structure of documents in a MongoDB
@@ -36,3 +37,44 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
 
 module.exports = mongoose.model('User', UserSchema); //Creates and exports a Mongoose model named 'User' from the schema
 //This model is used to interact with the 'users' collection in MongoDB
+*/
+const mongoose = require('mongoose');
+
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please add a name']
+  },
+  email: {
+    type: String,
+    required: [true, 'Please add an email'],
+    unique: true,
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Please add a valid email'
+    ]
+  },
+  password: {
+    type: String,
+    required: [true, 'Please add a password'],
+    minlength: 6,
+    select: false
+  },
+  preferences: {
+    darkMode: {
+      type: Boolean,
+      default: false
+    },
+    notifications: {
+      type: Boolean,
+      default: true
+    }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+const User = mongoose.model('User', UserSchema);
+module.exports = User;

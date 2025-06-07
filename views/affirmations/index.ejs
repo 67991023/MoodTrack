@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>MoodTrack</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/moods">Moods</a></li>
+        <li><a href="/affirmations" class="active">Affirmations</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <h2>Daily Affirmations</h2>
+      <a href="/affirmations/today" class="btn primary">Today's Affirmation</a>
+    </section>
+
+    <section class="todays-affirmation">
+      <div class="affirmation-card highlight">
+        <h3>Today's Affirmation</h3>
+        <blockquote>
+          <%= todaysAffirmation %>
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="affirmation-list">
+      <h3>All Affirmations</h3>
+      <ul>
+        <% affirmations.forEach(affirmation => { %>
+          <li><%= affirmation %></li>
+        <% }) %>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Current time: <%= currentTime %></p>
+    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+  </footer>
+  
+  <script src="/js/main.js"></script>
+</body>
+</html>

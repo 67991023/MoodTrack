@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>MoodTrack</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/moods">Moods</a></li>
+        <li><a href="/affirmations">Affirmations</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Track Your Emotional Well-being</h2>
+      <p>MoodTrack helps you understand and improve your mental health by tracking your moods over time.</p>
+      <div class="cta-buttons">
+        <a href="/moods/new" class="btn primary">Record Mood</a>
+        <a href="/affirmations/today" class="btn secondary">Today's Affirmation</a>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="feature">
+        <h3>Track Moods</h3>
+        <p>Log your daily emotions and track patterns over time.</p>
+      </div>
+      <div class="feature">
+        <h3>Daily Affirmations</h3>
+        <p>Start each day with a positive mental attitude.</p>
+      </div>
+      <div class="feature">
+        <h3>Analytics</h3>
+        <p>Visualize your mood patterns with charts and insights.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Current time: <%= currentTime %></p>
+    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+  </footer>
+  
+  <script src="/js/main.js"></script>
+</body>
+</html>

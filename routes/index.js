@@ -1,7 +1,8 @@
+/*
 const express = require('express'); //back end web app framework for building RESTful APIs
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const User = require('../models/user.js'); //import user model
+const User = require('../models/User.js'); //import user model
 // @rou// @route   POST /users/register
 // @desc    Register a new user
 router.post('/register', async (req, res) => {
@@ -67,6 +68,38 @@ router.get('/logout', (req, res) => { //logs out the user by clearing the token 
     expires: new Date(0)
   });
   res.redirect('/'); //redirect to home page
+});
+
+module.exports = router;
+*/
+//before was user.js
+const express = require('express');
+const router = express.Router();
+
+// Home page
+router.get('/', (req, res) => {
+  res.render('index', { 
+    title: 'MoodTrack - Home',
+    currentTime: '2025-06-07 16:49:54',
+    user: process.env.USER_LOGIN || '67991023' 
+  });
+});
+
+// Dashboard page
+router.get('/dashboard', (req, res) => {
+  res.render('dashboard', { 
+    title: 'MoodTrack - Dashboard',
+    currentTime: '2025-06-07 16:49:54',
+    user: process.env.USER_LOGIN || '67991023' 
+  });
+});
+
+// About page
+router.get('/about', (req, res) => {
+  res.render('about', { 
+    title: 'MoodTrack - About',
+    currentTime: '2025-06-07 16:49:54' 
+  });
 });
 
 module.exports = router;

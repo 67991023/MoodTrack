@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header>
+    <h1>MoodTrack</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/moods" class="active">Moods</a></li>
+        <li><a href="/affirmations">Affirmations</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-header">
+      <h2>Your Mood History</h2>
+      <a href="/moods/new" class="btn primary">Record New Mood</a>
+    </section>
+
+    <section class="mood-list">
+      <% if (locals.moods && moods.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Mood</th>
+              <th>Intensity</th>
+              <th>Note</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% moods.forEach((mood, index) => { %>
+              <tr>
+                <td><%= mood.date %></td>
+                <td><%= mood.mood %></td>
+                <td><%= mood.intensity %>/10</td>
+                <td><%= mood.note %></td>
+                <td><a href="/moods/<%= index %>">View</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No mood entries yet. <a href="/moods/new">Record your first mood</a>.</p>
+      <% } %>
+    </section>
+  </main>
+
+  <footer>
+    <p>Current time: <%= currentTime %></p>
+    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+  </footer>
+  
+  <script src="/js/main.js"></script>
+</body>
+</html>

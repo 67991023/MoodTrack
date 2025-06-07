@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken'); //imports jsonwebtoken library for creating and verifying JSON Web Tokens
-const User = require('../models/user.js'); //got error when chat user.js to User
+const User = require('../models/User.js'); //got error when chat user.js to User
 const protect = async (req, res, next) => {
     try {
         const token = req.cookies.token; //get token from cookies

@@ -1,3 +1,4 @@
+/*
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth.js');
@@ -80,6 +81,46 @@ router.get('/random', protect, async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Server Error' });
   }
+});
+
+module.exports = router;
+*/
+const express = require('express');
+const router = express.Router();
+
+// List of affirmations
+router.get('/', (req, res) => {
+  const affirmations = [
+    "I am capable of achieving my goals.",
+    "Every day is a new opportunity.",
+    "I trust my intuition and inner wisdom.",
+    "I am worthy of love and respect.",
+    "I embrace challenges as opportunities for growth."
+  ];
+  
+  res.render('affirmations/index', { 
+    title: 'Daily Affirmations',
+    currentTime: '2025-06-07 16:49:54',
+    affirmations: affirmations,
+    todaysAffirmation: affirmations[new Date().getDate() % affirmations.length]
+  });
+});
+
+// Today's affirmation
+router.get('/today', (req, res) => {
+  const affirmations = [
+    "I am capable of achieving my goals.",
+    "Every day is a new opportunity.",
+    "I trust my intuition and inner wisdom.",
+    "I am worthy of love and respect.",
+    "I embrace challenges as opportunities for growth."
+  ];
+  
+  res.render('affirmations/today', { 
+    title: "Today's Affirmation",
+    currentTime: '2025-06-07 16:49:54',
+    affirmation: affirmations[new Date().getDate() % affirmations.length]
+  });
 });
 
 module.exports = router;
