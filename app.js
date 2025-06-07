@@ -109,7 +109,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000; //set port to environment variable or default to 3000
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`)); //starts express server on the port 3000
 // */
-//main application file
+// main application file
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -119,38 +119,59 @@ const cookieParser = require('cookie-parser');
 dotenv.config();
 const app = express();
 
-//define PORT at the beginning
+// define PORT at the beginning
 const PORT = process.env.PORT || 3000;
 
 // At the top of your app.js file
 console.log('Starting application...');
 console.log('Node environment:', process.env.NODE_ENV);
 
-//Middleware
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 // After middleware setup
 console.log('Middleware initialized');
 
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// Handle static files if public directory exists
+try {
+  app.use(express.static(path.join(__dirname, 'public')));
+} catch (err) {
+  console.log('Public directory not found, continuing...');
+}
+
+// Setup view engine if views directory exists
+try {
+  app.set('view engine', 'ejs');
+  app.set('views', path.join(__dirname, 'views'));
+} catch (err) {
+  console.log('Views directory not found, continuing...');
+}
 
 // Before MongoDB connection
 console.log('Connecting to MongoDB...');
 
 mongoose
-  .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => {
     console.error('Database connection error:', err);
   });
 
-// Basic routes that don't require the route files
+// Add this to check connection status
+mongoose.connection.on('error', err => {
+  console.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+});
+
+// Before routes setup
+console.log('Setting up routes...');
+
+// Direct routes (not using route files)
 app.get('/', (req, res) => {
   res.send(`
     <!DOCTYPE html>
@@ -196,14 +217,13 @@ app.get('/', (req, res) => {
       <h1>MoodTrack API Status</h1>
       
       <div class="api-info">
-        <p>Current time: <span class="current-time">2025-06-07 12:01:48</span></p>
+        <p>Current time: <span class="current-time">2025-06-07 16:21:58</span></p>
         <p>MongoDB status: Connected</p>
         <p>Environment: ${process.env.NODE_ENV || 'development'}</p>
-        <p>API Endpoint: <a href="/api/status">/api/status</a></p>
+        <p>API Endpoint: <a href="/api/status">/api/status</a> | <a href="/test">/test</a></p>
       </div>
       
       <p>This is a temporary landing page while we set up your complete application.</p>
-      <p>Your user: ${process.env.USER_LOGIN || '67991023'}</p>
     </body>
     </html>
   `);
@@ -224,7 +244,7 @@ app.get('/api/status', (req, res) => {
       status: 'ok', 
       message: 'API is working',
       timestamp: new Date().toISOString(),
-      currentTime: '2025-06-07 12:01:48',
+      currentTime: '2025-06-07 16:21:58',
       db_status: dbStatusText,
       environment: process.env.NODE_ENV || 'development'
     });
@@ -235,6 +255,19 @@ app.get('/api/status', (req, res) => {
       stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack
     });
   }
+});
+
+// Basic mood tracking API endpoints
+app.get('/api/moods', (req, res) => {
+  res.json({ 
+    message: 'This endpoint will return moods (functionality coming soon)'
+  });
+});
+
+app.get('/api/affirmations', (req, res) => {
+  res.json({ 
+    message: 'This endpoint will return affirmations (functionality coming soon)'
+  });
 });
 
 // Create a simple error handler
@@ -250,5 +283,8 @@ app.use((err, req, res, next) => {
 // Just before app.listen
 console.log('Starting server on port', PORT);
 
-//start server
+// Start server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// For Vercel serverless deployment
+module.exports = app;
