@@ -12,6 +12,7 @@
       "dest": "/app.js"
     }
   ],
+  "includeFiles": ["routes/**/*"],
   "env": {
     "NODE_ENV": "production"
   }
