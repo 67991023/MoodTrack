@@ -1,54 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <header>
-    <h1>MoodTrack</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/moods">Moods</a></li>
-        <li><a href="/affirmations">Affirmations</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-      </ul>
-    </nav>
-  </header>
+<!-- Hero Section -->
+<section class="hero" data-appear>
+  <h2>Your Journey to Emotional Wellness</h2>
+  <p>MoodTrack helps you understand and improve your mental health by tracking your emotional patterns, providing insights, and offering daily affirmations.</p>
+  <div class="cta-buttons">
+    <a href="/moods/new" class="btn primary">Record Today's Mood</a>
+    <a href="/affirmations" class="btn secondary">View Today's Affirmation</a>
+  </div>
+</section>
 
-  <main>
-    <section class="hero">
-      <h2>Track Your Emotional Well-being</h2>
-      <p>MoodTrack helps you understand and improve your mental health by tracking your moods over time.</p>
-      <div class="cta-buttons">
-        <a href="/moods/new" class="btn primary">Record Mood</a>
-        <a href="/affirmations/today" class="btn secondary">Today's Affirmation</a>
-      </div>
-    </section>
+<!-- Features Section -->
+<section class="features" data-appear>
+  <div class="feature">
+    <h3>Track Your Moods</h3>
+    <p>Record how you're feeling each day with our intuitive mood tracker. Identify patterns and triggers in your emotional health.</p>
+    <a href="/moods/new" class="btn">Start Tracking</a>
+  </div>
+  <div class="feature">
+    <h3>Daily Affirmations</h3>
+    <p>Begin each day with a positive mindset through our curated collection of uplifting affirmations designed to boost emotional resilience.</p>
+    <a href="/affirmations" class="btn">Explore Affirmations</a>
+  </div>
+  <div class="feature">
+    <h3>Personal Insights</h3>
+    <p>Gain valuable insights into your emotional patterns with visual analytics and personalized recommendations for mental wellbeing.</p>
+    <a href="/dashboard" class="btn">View Dashboard</a>
+  </div>
+</section>
 
-    <section class="features">
-      <div class="feature">
-        <h3>Track Moods</h3>
-        <p>Log your daily emotions and track patterns over time.</p>
-      </div>
-      <div class="feature">
-        <h3>Daily Affirmations</h3>
-        <p>Start each day with a positive mental attitude.</p>
-      </div>
-      <div class="feature">
-        <h3>Analytics</h3>
-        <p>Visualize your mood patterns with charts and insights.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>Current time: <%= currentTime %></p>
-    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
-  </footer>
-  
-  <script src="/js/main.js"></script>
-</body>
-</html>
+<!-- Testimonial Section -->
+<section class="affirmation-card" data-appear>
+  <p>"Tracking my moods has helped me identify patterns and make positive changes in my life. I now understand how my daily activities affect my emotional state."</p>
+  <span class="affirmation-date">User 67991023, June 2025</span>
+</section>

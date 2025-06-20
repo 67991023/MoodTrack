@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title><%= typeof title !== 'undefined' ? title : 'MoodTrack' %></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Track your moods, receive daily affirmations, and improve your mental wellbeing with MoodTrack">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <% if (typeof extraStyles !== 'undefined') { %>
+    <%- extraStyles %>
+  <% } %>
+</head>
+<body class="page-transition">
+  <header>
+    <h1>MoodTrack</h1>
+    <nav>
+      <ul>
+        <li><a href="/" class="<%= path === '/' ? 'active' : '' %>">Home</a></li>
+        <li><a href="/moods" class="<%= path && path.startsWith('/moods') ? 'active' : '' %>">Moods</a></li>
+        <li><a href="/affirmations" class="<%= path && path.startsWith('/affirmations') ? 'active' : '' %>">Affirmations</a></li>
+        <li><a href="/dashboard" class="<%= path === '/dashboard' ? 'active' : '' %>">Dashboard</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <% if (typeof messages !== 'undefined' && messages.success) { %>
+      <div class="flash-message flash-success">
+        <%= messages.success %>
+      </div>
+    <% } %>
+    <% if (typeof messages !== 'undefined' && messages.error) { %>
+      <div class="flash-message flash-error">
+        <%= messages.error %>
+      </div>
+    <% } %>
+    <% if (typeof messages !== 'undefined' && messages.info) { %>
+      <div class="flash-message flash-info">
+        <%= messages.info %>
+      </div>
+    <% } %>
+    
+    <%- body %>
+  </main>
+
+  <footer>
+    <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-20 15:52:44' %></p>
+    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+  </footer>
+  
+  <script src="/js/main.js"></script>
+  <% if (typeof extraScripts !== 'undefined') { %>
+    <%- extraScripts %>
+  <% } %>
+</body>
+</html>

@@ -1,57 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Mood Tracker</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-  <%- include('partials/header') %>
-  
-  <div class="container">
-    <h1>Welcome, <%= user.name %></h1>
-    
-    <section class="dashboard-section">
-      <h2>Today's Affirmation</h2>
-      <% if (todaysAffirmation) { %>
-        <div class="affirmation-card">
-          <p><%= todaysAffirmation.content %></p>
-          <small>Created: <%= new Date(todaysAffirmation.date).toLocaleDateString() %></small>
-        </div>
-      <% } else { %>
-        <p>You haven't added an affirmation today.</p>
-        <a href="/affirmations/new" class="btn">Add Affirmation</a>
-      <% } %>
-    </section>
-    
-    <section class="dashboard-section">
-      <h2>Mood Tracking</h2>
-      <div class="mood-chart-container">
-        <canvas id="moodChart"></canvas>
-      </div>
-      <% if (!todaysMood) { %>
-        <a href="/moods/new" class="btn">Log Today's Mood</a>
-      <% } %>
-    </section>
+<div class="page-header">
+  <h1>Your Wellness Dashboard</h1>
+</div>
+
+<section class="summary-stats">
+  <div class="stat-card">
+    <div class="stat-value"><%= averageMood || '0.0' %></div>
+    <div class="stat-label">Average Mood (1-10)</div>
   </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= todaysMood || 'N/A' %></div>
+    <div class="stat-label">Today's Mood</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value"><%= moodDates ? moodDates.length : 0 %></div>
+    <div class="stat-label">Days Tracked</div>
+  </div>
+</section>
+
+<div class="dashboard-grid">
+  <section class="dashboard-section">
+    <h2>Mood Trends</h2>
+    <div class="mood-chart-container">
+      <canvas id="moodChart"></canvas>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #4285F4;"></div>
+        <span>Mood Intensity</span>
+      </div>
+    </div>
+  </section>
   
-  <!-- Load the external JS file -->
-  <script src="/js/moodChart.js"></script>
+  <section class="dashboard-section">
+    <h2>Contributing Factors</h2>
+    <% if (typeof factorCounts !== 'undefined' && factorCounts && Object.keys(factorCounts).length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Factor</th>
+            <th>Frequency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(const factor in factorCounts) { %>
+            <tr>
+              <td><%= factor %></td>
+              <td><%= factorCounts[factor] %> days</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>No factor data available yet. Continue tracking your moods to see patterns emerge.</p>
+    <% } %>
+  </section>
+</div>
+
+<section class="prompt-card">
+  <h3>Reflection Prompt</h3>
+  <p>What activities helped improve your mood this week? Consider scheduling more of these in the coming days.</p>
+</section>
+
+<section>
+  <h2>Wellness Tips</h2>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <h3>Morning Mindfulness</h3>
+      <p>Start your day with 5 minutes of deep breathing to set a calm tone.</p>
+    </div>
+    <div class="tip-card">
+      <h3>Movement Breaks</h3>
+      <p>Take short walking breaks throughout your day to boost your mood.</p>
+    </div>
+    <div class="tip-card">
+      <h3>Sleep Routine</h3>
+      <p>Maintain a consistent sleep schedule, even on weekends.</p>
+    </div>
+    <div class="tip-card">
+      <h3>Digital Sunset</h3>
+      <p>Put away screens at least 30 minutes before bedtime for better sleep quality.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+// Put this script in a separate file later: public/js/moodChart.js
+document.addEventListener('DOMContentLoaded', function() {
+  // Default data for the chart
+  const defaultDates = ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20'];
+  const defaultRatings = [7, 5, 8, 6, 9, 7];
   
-  <!-- Pass data to the function in a way that avoids EJS parsing issues -->
-  <script>
-    // Create a global variable to hold the data
-    window.moodAppData = {
-      dates: JSON.parse('<%- JSON.stringify(moodDates || []) %>'),
-      ratings: JSON.parse('<%- JSON.stringify(moodRatings || []) %>')
-    };
-    
-    // Initialize the chart with the data
-    document.addEventListener('DOMContentLoaded', function() {
-      initMoodChart(window.moodAppData.dates, window.moodAppData.ratings);
+  const chartElement = document.getElementById('moodChart');
+  if (chartElement && typeof Chart !== 'undefined') {
+    const chart = new Chart(chartElement.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: defaultDates,
+        datasets: [{
+          label: 'Mood Rating',
+          backgroundColor: 'rgba(66, 133, 244, 0.2)',
+          borderColor: '#4285F4',
+          borderWidth: 3,
+          pointBackgroundColor: '#4285F4',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          data: defaultRatings,
+          tension: 0.2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 10,
+            ticks: {
+              stepSize: 2
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
     });
-  </script>
-</body>
-</html>
+  }
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>

@@ -1,184 +1,3 @@
-/*
-// main application file
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path');
-const dotenv = require('dotenv');
-const cookieParser = require('cookie-parser');
-
-dotenv.config();
-const app = express();
-
-// define PORT at the beginning
-const PORT = process.env.PORT || 3000;
-
-// At the top of your app.js file
-console.log('Starting application...');
-console.log('Node environment:', process.env.NODE_ENV);
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-// After middleware setup
-console.log('Middleware initialized');
-
-// Handle static files if public directory exists
-try {
-  app.use(express.static(path.join(__dirname, 'public')));
-} catch (err) {
-  console.log('Public directory not found, continuing...');
-}
-
-// Setup view engine if views directory exists
-try {
-  app.set('view engine', 'ejs');
-  app.set('views', path.join(__dirname, 'views'));
-} catch (err) {
-  console.log('Views directory not found, continuing...');
-}
-
-// Before MongoDB connection
-console.log('Connecting to MongoDB...');
-
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => {
-    console.error('Database connection error:', err);
-  });
-
-// Add this to check connection status
-mongoose.connection.on('error', err => {
-  console.error('MongoDB connection error:', err);
-});
-
-mongoose.connection.on('disconnected', () => {
-  console.log('MongoDB disconnected');
-});
-
-// Before routes setup
-console.log('Setting up routes...');
-
-// Direct routes (not using route files)
-app.get('/', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>MoodTrack</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          max-width: 800px;
-          margin: 0 auto;
-          padding: 20px;
-          line-height: 1.6;
-        }
-        .success-box {
-          background-color: #d4edda;
-          color: #155724;
-          padding: 15px;
-          border-radius: 5px;
-          margin-bottom: 20px;
-        }
-        h1 {
-          color: #343a40;
-        }
-        .api-info {
-          background-color: #f8f9fa;
-          padding: 15px;
-          border-radius: 5px;
-          border-left: 5px solid #007bff;
-        }
-        .current-time {
-          font-weight: bold;
-          color: #007bff;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="success-box">
-        <h2>✅ Server is running!</h2>
-        <p>Your MoodTrack application has been successfully deployed to Vercel.</p>
-      </div>
-      
-      <h1>MoodTrack API Status</h1>
-      
-      <div class="api-info">
-        <p>Current time: <span class="current-time">2025-06-07 16:21:58</span></p>
-        <p>MongoDB status: Connected</p>
-        <p>Environment: ${process.env.NODE_ENV || 'development'}</p>
-        <p>API Endpoint: <a href="/api/status">/api/status</a> | <a href="/test">/test</a></p>
-      </div>
-      
-      <p>This is a temporary landing page while we set up your complete application.</p>
-    </body>
-    </html>
-  `);
-});
-
-app.get('/test', (req, res) => {
-  res.send('Server is running correctly');
-});
-
-// API status endpoint
-app.get('/api/status', (req, res) => {
-  try {
-    const dbStatus = mongoose.connection.readyState;
-    // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
-    const dbStatusText = ['Disconnected', 'Connected', 'Connecting', 'Disconnecting'][dbStatus];
-    
-    res.json({
-      status: 'ok', 
-      message: 'API is working',
-      timestamp: new Date().toISOString(),
-      currentTime: '2025-06-07 16:21:58',
-      db_status: dbStatusText,
-      environment: process.env.NODE_ENV || 'development'
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      message: error.message,
-      stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack
-    });
-  }
-});
-
-// Basic mood tracking API endpoints
-app.get('/api/moods', (req, res) => {
-  res.json({ 
-    message: 'This endpoint will return moods (functionality coming soon)'
-  });
-});
-
-app.get('/api/affirmations', (req, res) => {
-  res.json({ 
-    message: 'This endpoint will return affirmations (functionality coming soon)'
-  });
-});
-
-// Create a simple error handler
-app.use((req, res, next) => {
-  res.status(404).send('Sorry, page not found!');
-});
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke! Please try again later.');
-});
-
-// Just before app.listen
-console.log('Starting server on port', PORT);
-
-// Start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// For Vercel serverless deployment
-module.exports = app;
-*/
 // main application file
 const express = require('express');
 const mongoose = require('mongoose');
@@ -186,6 +5,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
+const expressLayouts = require('express-ejs-layouts');
 
 // Load environment variables
 dotenv.config();
@@ -212,8 +32,10 @@ try {
   console.error('Error setting up static files:', err);
 }
 
-// Setup view engine
+// Setup view engine with layouts
 try {
+  app.use(expressLayouts);
+  app.set('layout', 'layout/main');
   app.set('view engine', 'ejs');
   app.set('views', path.join(__dirname, 'views'));
   console.log('View engine set up');
@@ -221,13 +43,41 @@ try {
   console.error('Error setting up view engine:', err);
 }
 
-// MongoDB connection
-console.log('Connecting to MongoDB...');
+// MongoDB connection - UPDATED
+console.log('Connecting to MongoDB Atlas...');
+
+// Get current date and time in YYYY-MM-DD HH:MM:SS format
+const getCurrentDateTime = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
+// Connect to MongoDB Atlas with fallback
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
+  .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/moodtrack', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000 // 5 second timeout for server selection
+  })
+  .then(() => console.log('Connected to MongoDB Atlas'))
   .catch((err) => {
     console.error('Database connection error:', err);
+    
+    // Try in-memory MongoDB if Atlas connection fails and we're in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Attempting to use in-memory MongoDB for development...');
+      
+      // Note: You would need to install mongodb-memory-server for this to work
+      // This is just placeholder code to show the concept
+      console.log('Please install mongodb-memory-server or fix your MongoDB connection');
+    }
   });
 
 // MongoDB connection monitoring
@@ -237,6 +87,10 @@ mongoose.connection.on('error', err => {
 
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected');
+});
+
+mongoose.connection.on('connected', () => {
+  console.log('MongoDB reconnected');
 });
 
 // Function to safely require route files
@@ -275,7 +129,7 @@ app.get('/api/status', (req, res) => {
       status: 'ok', 
       message: 'API is working',
       timestamp: new Date().toISOString(),
-      currentTime: '2025-06-07 16:49:54',
+      currentTime: getCurrentDateTime(),
       db_status: dbStatusText,
       environment: process.env.NODE_ENV || 'development'
     });
@@ -298,7 +152,8 @@ if (indexRoutes) {
     try {
       res.render('index', { 
         title: 'MoodTrack',
-        currentTime: '2025-06-07 16:49:54',
+        currentTime: getCurrentDateTime(),
+        path: '/',
         user: process.env.USER_LOGIN || '67991023' 
       });
     } catch (err) {
@@ -364,8 +219,8 @@ if (indexRoutes) {
           </div>
           
           <div class="api-info">
-            <p>Current time: <span class="current-time">2025-06-07 16:49:54</span></p>
-            <p>MongoDB status: Connected</p>
+            <p>Current time: <span class="current-time">${getCurrentDateTime()}</span></p>
+            <p>MongoDB status: ${mongoose.connection.readyState ? 'Connected' : 'Disconnected'}</p>
             <p>Environment: ${process.env.NODE_ENV || 'development'}</p>
             <p>User: ${process.env.USER_LOGIN || '67991023'}</p>
           </div>
@@ -381,11 +236,21 @@ if (moodRoutes) {
   console.log('Mood routes loaded');
 } else {
   app.get('/moods', (req, res) => {
-    res.send(`
-      <h1>Mood Tracking</h1>
-      <p>Track your daily moods and emotions to better understand your mental health patterns.</p>
-      <p><a href="/">Back to Home</a></p>
-    `);
+    res.render('moods/index', { 
+      title: 'Mood Tracking',
+      currentTime: getCurrentDateTime(),
+      path: '/moods',
+      moods: []
+    });
+  });
+  
+  app.get('/moods/new', (req, res) => {
+    res.render('moods/new', { 
+      title: 'Record New Mood',
+      currentTime: getCurrentDateTime(),
+      path: '/moods',
+      moodOptions: ['Happy', 'Sad', 'Angry', 'Anxious', 'Calm', 'Energetic', 'Tired']
+    });
   });
 }
 
@@ -394,22 +259,54 @@ if (affirmationsRoutes) {
   console.log('Affirmation routes loaded');
 } else {
   app.get('/affirmations', (req, res) => {
-    res.send(`
-      <h1>Daily Affirmations</h1>
-      <p>Positive affirmations to boost your mental health and start your day right.</p>
-      <p><a href="/">Back to Home</a></p>
-    `);
+    res.render('affirmations/index', {
+      title: 'Daily Affirmations',
+      currentTime: getCurrentDateTime(),
+      path: '/affirmations',
+      today: getCurrentDateTime().split(' ')[0],
+      dailyAffirmation: "I am worthy of love and respect. My feelings are valid and I deserve to take care of myself."
+    });
+  });
+  
+  app.get('/dashboard', (req, res) => {
+    res.render('dashboard', {
+      title: 'Your Wellness Dashboard',
+      currentTime: getCurrentDateTime(),
+      path: '/dashboard',
+      moodDates: ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20'],
+      moodRatings: [7, 5, 8, 6, 9, 7],
+      averageMood: '7.0',
+      todaysMood: null,
+      factorCounts: {
+        'Exercise': 4,
+        'Work': 7,
+        'Socializing': 3,
+        'Nutrition': 2
+      }
+    });
   });
 }
 
-// Error handlers
+// 404 handler
 app.use((req, res, next) => {
-  res.status(404).send('Sorry, page not found!');
+  res.status(404).render('error', { 
+    title: 'Page Not Found', 
+    message: 'The page you requested does not exist.',
+    currentTime: getCurrentDateTime(),
+    path: req.path
+  });
 });
 
+// Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke! Please try again later.');
+  res.status(500).render('error', { 
+    title: 'Server Error', 
+    message: 'Something went wrong on our end. Please try again later.',
+    currentTime: getCurrentDateTime(),
+    path: req.path,
+    error: process.env.NODE_ENV === 'development' ? err : {}
+  });
 });
 
 // Start server

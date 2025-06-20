@@ -1,53 +1,66 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <header>
-    <h1>MoodTrack</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/moods">Moods</a></li>
-        <li><a href="/affirmations" class="active">Affirmations</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-      </ul>
-    </nav>
-  </header>
+<div class="page-header">
+  <h1>Daily Affirmations</h1>
+</div>
 
-  <main>
-    <section class="page-header">
-      <h2>Daily Affirmations</h2>
-      <a href="/affirmations/today" class="btn primary">Today's Affirmation</a>
-    </section>
+<section class="affirmation-section">
+  <div class="affirmation-card">
+    <span class="affirmation-date"><%= today %></span>
+    <p><%= dailyAffirmation || "I am worthy of love and respect. My feelings are valid and I deserve to take care of myself." %></p>
+    <button class="btn share-btn">
+      <span>Share</span>
+    </button>
+  </div>
+</section>
 
-    <section class="todays-affirmation">
-      <div class="affirmation-card highlight">
-        <h3>Today's Affirmation</h3>
-        <blockquote>
-          <%= todaysAffirmation %>
-        </blockquote>
-      </div>
-    </section>
+<section>
+  <h2>Affirmation Categories</h2>
+  <div class="category-grid">
+    <a href="#" class="category-card active" data-category="all">
+      <h4>All Affirmations</h4>
+      <p>View all available affirmations</p>
+    </a>
+    <a href="#" class="category-card" data-category="confidence">
+      <h4>Self-Confidence</h4>
+      <p>Boost your self-esteem and belief in yourself</p>
+    </a>
+    <a href="#" class="category-card" data-category="calm">
+      <h4>Calm & Peace</h4>
+      <p>Find inner peace during stressful moments</p>
+    </a>
+    <a href="#" class="category-card" data-category="gratitude">
+      <h4>Gratitude</h4>
+      <p>Cultivate appreciation for life's blessings</p>
+    </a>
+    <a href="#" class="category-card" data-category="growth">
+      <h4>Growth Mindset</h4>
+      <p>Embrace challenges and personal development</p>
+    </a>
+  </div>
 
-    <section class="affirmation-list">
-      <h3>All Affirmations</h3>
-      <ul>
-        <% affirmations.forEach(affirmation => { %>
-          <li><%= affirmation %></li>
-        <% }) %>
-      </ul>
-    </section>
-  </main>
-
-  <footer>
-    <p>Current time: <%= currentTime %></p>
-    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
-  </footer>
-  
-  <script src="/js/main.js"></script>
-</body>
-</html>
+  <div class="affirmation-grid">
+    <div class="affirmation-item" data-category="confidence">
+      <p>"I am capable of achieving whatever I set my mind to."</p>
+      <button class="btn small save-btn">Save</button>
+    </div>
+    <div class="affirmation-item" data-category="calm">
+      <p>"I breathe in calmness and breathe out tension. I am at peace."</p>
+      <button class="btn small save-btn">Save</button>
+    </div>
+    <div class="affirmation-item" data-category="gratitude">
+      <p>"I am grateful for the abundance in my life and the opportunities each day brings."</p>
+      <button class="btn small save-btn">Save</button>
+    </div>
+    <div class="affirmation-item" data-category="growth">
+      <p>"Every challenge I face is an opportunity to grow stronger and wiser."</p>
+      <button class="btn small save-btn">Save</button>
+    </div>
+    <div class="affirmation-item" data-category="confidence">
+      <p>"I trust my intuition and make decisions with confidence."</p>
+      <button class="btn small save-btn">Save</button>
+    </div>
+    <div class="affirmation-item" data-category="calm">
+      <p>"I release all worry and center myself in the present moment."</p>
+      <button class="btn small save-btn">Save</button>
+    </div>
+  </div>
+</section>

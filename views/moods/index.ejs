@@ -1,64 +1,76 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <header>
-    <h1>MoodTrack</h1>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/moods" class="active">Moods</a></li>
-        <li><a href="/affirmations">Affirmations</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-      </ul>
-    </nav>
-  </header>
+<div class="page-header">
+  <h1>Your Mood History</h1>
+  <a href="/moods/new" class="btn primary">Record New Mood</a>
+</div>
 
-  <main>
-    <section class="page-header">
-      <h2>Your Mood History</h2>
-      <a href="/moods/new" class="btn primary">Record New Mood</a>
-    </section>
+<% if (moods && moods.length > 0) { %>
+  <div class="mood-list">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Mood</th>
+          <th>Intensity</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% moods.forEach(function(mood) { %>
+          <tr>
+            <td><%= new Date(mood.date).toLocaleDateString() %></td>
+            <td><%= mood.mood %></td>
+            <td><%= mood.intensity %>/10</td>
+            <td><%= mood.notes ? (mood.notes.length > 50 ? mood.notes.substring(0, 50) + '...' : mood.notes) : '-' %></td>
+            <td><a href="/moods/<%= mood._id %>" class="btn small">Details</a></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } else { %>
+  <div class="card">
+    <h3>No mood entries yet</h3>
+    <p>Start tracking your moods to gain insights into your emotional patterns.</p>
+    <a href="/moods/new" class="btn primary">Record Your First Mood</a>
+  </div>
 
-    <section class="mood-list">
-      <% if (locals.moods && moods.length > 0) { %>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Mood</th>
-              <th>Intensity</th>
-              <th>Note</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% moods.forEach((mood, index) => { %>
-              <tr>
-                <td><%= mood.date %></td>
-                <td><%= mood.mood %></td>
-                <td><%= mood.intensity %>/10</td>
-                <td><%= mood.note %></td>
-                <td><a href="/moods/<%= index %>">View</a></td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      <% } else { %>
-        <p>No mood entries yet. <a href="/moods/new">Record your first mood</a>.</p>
-      <% } %>
-    </section>
-  </main>
-
-  <footer>
-    <p>Current time: <%= currentTime %></p>
-    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
-  </footer>
-  
-  <script src="/js/main.js"></script>
-</body>
-</html>
+  <!-- Sample Mood Data for Demo -->
+  <h3>Demo Data (Sample Entries)</h3>
+  <div class="mood-list">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Mood</th>
+          <th>Intensity</th>
+          <th>Notes</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Jun 20, 2025</td>
+          <td>Happy</td>
+          <td>8/10</td>
+          <td>Had a productive day at work and went for a walk in the evening</td>
+          <td><a href="#" class="btn small">Details</a></td>
+        </tr>
+        <tr>
+          <td>Jun 19, 2025</td>
+          <td>Anxious</td>
+          <td>6/10</td>
+          <td>Project deadline approaching, feeling stressed</td>
+          <td><a href="#" class="btn small">Details</a></td>
+        </tr>
+        <tr>
+          <td>Jun 18, 2025</td>
+          <td>Calm</td>
+          <td>7/10</td>
+          <td>Practiced meditation for 20 minutes in the morning</td>
+          <td><a href="#" class="btn small">Details</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+<% } %>
