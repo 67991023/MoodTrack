@@ -12,55 +12,60 @@
   </div>
 </section>
 
-<section>
-  <h2>Affirmation Categories</h2>
-  <div class="category-grid">
-    <a href="#" class="category-card active" data-category="all">
-      <h4>All Affirmations</h4>
-      <p>View all available affirmations</p>
-    </a>
-    <a href="#" class="category-card" data-category="confidence">
-      <h4>Self-Confidence</h4>
-      <p>Boost your self-esteem and belief in yourself</p>
-    </a>
-    <a href="#" class="category-card" data-category="calm">
-      <h4>Calm & Peace</h4>
-      <p>Find inner peace during stressful moments</p>
-    </a>
-    <a href="#" class="category-card" data-category="gratitude">
-      <h4>Gratitude</h4>
-      <p>Cultivate appreciation for life's blessings</p>
-    </a>
-    <a href="#" class="category-card" data-category="growth">
-      <h4>Growth Mindset</h4>
-      <p>Embrace challenges and personal development</p>
-    </a>
-  </div>
-
-  <div class="affirmation-grid">
-    <div class="affirmation-item" data-category="confidence">
-      <p>"I am capable of achieving whatever I set my mind to."</p>
-      <button class="btn small save-btn">Save</button>
-    </div>
-    <div class="affirmation-item" data-category="calm">
-      <p>"I breathe in calmness and breathe out tension. I am at peace."</p>
-      <button class="btn small save-btn">Save</button>
-    </div>
-    <div class="affirmation-item" data-category="gratitude">
-      <p>"I am grateful for the abundance in my life and the opportunities each day brings."</p>
-      <button class="btn small save-btn">Save</button>
-    </div>
-    <div class="affirmation-item" data-category="growth">
-      <p>"Every challenge I face is an opportunity to grow stronger and wiser."</p>
-      <button class="btn small save-btn">Save</button>
-    </div>
-    <div class="affirmation-item" data-category="confidence">
-      <p>"I trust my intuition and make decisions with confidence."</p>
-      <button class="btn small save-btn">Save</button>
-    </div>
-    <div class="affirmation-item" data-category="calm">
-      <p>"I release all worry and center myself in the present moment."</p>
-      <button class="btn small save-btn">Save</button>
-    </div>
-  </div>
+<section class="category-grid">
+  <a href="#" class="category-card">
+    <h3>Self-Love</h3>
+    <p>Affirmations to nurture a positive relationship with yourself.</p>
+  </a>
+  <a href="#" class="category-card">
+    <h3>Career Growth</h3>
+    <p>Positive statements to boost your confidence in professional settings.</p>
+  </a>
+  <a href="#" class="category-card">
+    <h3>Anxiety Relief</h3>
+    <p>Calming affirmations to ease anxiety and promote peace.</p>
+  </a>
+  <a href="#" class="category-card">
+    <h3>Gratitude</h3>
+    <p>Reminders to appreciate the abundance in your life.</p>
+  </a>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Affirmation card animation
+    const affirmationCard = document.querySelector('.affirmation-card');
+    if (affirmationCard) {
+      setTimeout(() => {
+        affirmationCard.classList.add('appear-active');
+      }, 300);
+    }
+    
+    // Share button functionality
+    const shareBtn = document.querySelector('.share-btn');
+    if (shareBtn) {
+      shareBtn.addEventListener('click', function() {
+        const affirmation = document.querySelector('.affirmation-card p').textContent;
+        
+        if (navigator.share) {
+          navigator.share({
+            title: 'My Daily Affirmation',
+            text: affirmation + ' - Shared from MoodTrack',
+            url: window.location.href
+          })
+          .catch(error => console.log('Error sharing:', error));
+        } else {
+          // Fallback for browsers that don't support Web Share API
+          const tempInput = document.createElement('input');
+          document.body.appendChild(tempInput);
+          tempInput.value = affirmation + ' - Shared from MoodTrack';
+          tempInput.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempInput);
+          
+          alert('Affirmation copied to clipboard!');
+        }
+      });
+    }
+  });
+</script>

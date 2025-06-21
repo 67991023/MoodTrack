@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Application startup logs
-console.log('Starting application...');
+console.log('Starting MoodTrack application...');
 console.log('Node environment:', process.env.NODE_ENV);
 
 // Middleware
@@ -43,9 +43,6 @@ try {
   console.error('Error setting up view engine:', err);
 }
 
-// MongoDB connection - UPDATED
-console.log('Connecting to MongoDB Atlas...');
-
 // Get current date and time in YYYY-MM-DD HH:MM:SS format
 const getCurrentDateTime = () => {
   const now = new Date();
@@ -59,16 +56,43 @@ const getCurrentDateTime = () => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
+// Define default sample data for pages to avoid undefined errors
+const getSampleMoodData = () => {
+  return {
+    moodDates: ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20', 'Jun 21'],
+    moodRatings: [7, 5, 8, 6, 9, 7, 8],
+    averageMood: '7.1',
+    todaysMood: '8',
+    factorCounts: {
+      'Exercise': 4,
+      'Work': 7,
+      'Socializing': 3,
+      'Nutrition': 2,
+      'Sleep': 5,
+      'Meditation': 3
+    }
+  };
+};
+
+// MongoDB connection - UPDATED
+console.log('Connecting to MongoDB Atlas...');
+
 // Connect to MongoDB Atlas with fallback
+let dbConnected = false;
+
 mongoose
   .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/moodtrack', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000 // 5 second timeout for server selection
   })
-  .then(() => console.log('Connected to MongoDB Atlas'))
+  .then(() => {
+    console.log('Connected to MongoDB Atlas');
+    dbConnected = true;
+  })
   .catch((err) => {
     console.error('Database connection error:', err);
+    console.log('Continuing without database connection. Using sample data.');
     
     // Try in-memory MongoDB if Atlas connection fails and we're in development
     if (process.env.NODE_ENV !== 'production') {
@@ -83,14 +107,17 @@ mongoose
 // MongoDB connection monitoring
 mongoose.connection.on('error', err => {
   console.error('MongoDB connection error:', err);
+  dbConnected = false;
 });
 
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected');
+  dbConnected = false;
 });
 
 mongoose.connection.on('connected', () => {
   console.log('MongoDB reconnected');
+  dbConnected = true;
 });
 
 // Function to safely require route files
@@ -151,7 +178,7 @@ if (indexRoutes) {
   app.get('/', (req, res) => {
     try {
       res.render('index', { 
-        title: 'MoodTrack',
+        title: 'MoodTrack - Your Emotional Wellness Companion',
         currentTime: getCurrentDateTime(),
         path: '/',
         user: process.env.USER_LOGIN || '67991023' 
@@ -163,45 +190,72 @@ if (indexRoutes) {
         <html>
         <head>
           <title>MoodTrack</title>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <style>
             body {
-              font-family: Arial, sans-serif;
+              font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
               max-width: 800px;
               margin: 0 auto;
               padding: 20px;
               line-height: 1.6;
+              background-color: #f9f9f9;
+              color: #333;
             }
             .success-box {
-              background-color: #d4edda;
+              background-color: #e1f3e8;
               color: #155724;
-              padding: 15px;
-              border-radius: 5px;
-              margin-bottom: 20px;
+              padding: 20px;
+              border-radius: 10px;
+              margin-bottom: 30px;
+              border-left: 5px solid #4a8072;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             }
             h1 {
-              color: #343a40;
+              color: #4a8072;
+              font-weight: 600;
+              font-size: 2.25rem;
+              margin-bottom: 20px;
+            }
+            h2 {
+              font-size: 1.5rem;
+              color: #4a8072;
             }
             .api-info {
-              background-color: #f8f9fa;
-              padding: 15px;
-              border-radius: 5px;
-              border-left: 5px solid #007bff;
+              background-color: #fff;
+              padding: 25px;
+              border-radius: 10px;
+              border-left: 5px solid #4a8072;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+              margin-top: 30px;
             }
             .current-time {
               font-weight: bold;
-              color: #007bff;
+              color: #4a8072;
             }
             .navigation {
-              margin: 20px 0;
+              margin: 30px 0;
               display: flex;
               gap: 15px;
+              flex-wrap: wrap;
             }
             .navigation a {
-              padding: 10px 15px;
-              background-color: #007bff;
+              padding: 12px 20px;
+              background-color: #4a8072;
               color: white;
               text-decoration: none;
-              border-radius: 5px;
+              border-radius: 8px;
+              font-weight: 500;
+              transition: all 0.2s ease;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .navigation a:hover {
+              background-color: #336353;
+              transform: translateY(-2px);
+              box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+            }
+            p {
+              margin-bottom: 15px;
             }
           </style>
         </head>
@@ -216,6 +270,7 @@ if (indexRoutes) {
           <div class="navigation">
             <a href="/moods">View Moods</a>
             <a href="/affirmations">Daily Affirmations</a>
+            <a href="/dashboard">View Dashboard</a>
             <a href="/api/status">API Status</a>
           </div>
           
@@ -238,19 +293,21 @@ if (moodRoutes) {
 } else {
   app.get('/moods', (req, res) => {
     res.render('moods/index', { 
-      title: 'Mood Tracking',
+      title: 'Mood Tracking - MoodTrack',
       currentTime: getCurrentDateTime(),
       path: '/moods',
-      moods: []
+      moods: [],
+      user: process.env.USER_LOGIN || '67991023'
     });
   });
   
   app.get('/moods/new', (req, res) => {
     res.render('moods/new', { 
-      title: 'Record New Mood',
+      title: 'Record New Mood - MoodTrack',
       currentTime: getCurrentDateTime(),
       path: '/moods',
-      moodOptions: ['Happy', 'Sad', 'Angry', 'Anxious', 'Calm', 'Energetic', 'Tired']
+      moodOptions: ['Happy', 'Sad', 'Angry', 'Anxious', 'Calm', 'Energetic', 'Tired'],
+      user: process.env.USER_LOGIN || '67991023'
     });
   });
 }
@@ -259,12 +316,17 @@ if (affirmationsRoutes) {
   app.use('/affirmations', affirmationsRoutes);
   console.log('Affirmation routes loaded');
 } else {
+  // Fix for the affirmations page - ensure 'today' is defined
   app.get('/affirmations', (req, res) => {
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    
     res.render('affirmations/index', {
-      title: 'Daily Affirmations',
+      title: 'Daily Affirmations - MoodTrack',
       currentTime: getCurrentDateTime(),
       path: '/affirmations',
-      today: getCurrentDateTime().split(' ')[0],
+      today: today, // This fixes the 'today is not defined' error
+      user: process.env.USER_LOGIN || '67991023',
       dailyAffirmation: "I am worthy of love and respect. My feelings are valid and I deserve to take care of myself."
     });
   });
@@ -272,30 +334,35 @@ if (affirmationsRoutes) {
 
 // Always include a dedicated dashboard route to ensure all required variables are passed
 app.get('/dashboard', (req, res) => {
+  const sampleData = getSampleMoodData();
+  
   res.render('dashboard', {
-    title: 'Your Wellness Dashboard',
+    title: 'Your Wellness Dashboard - MoodTrack',
     currentTime: getCurrentDateTime(),
     path: '/dashboard',
-    moodDates: ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20'],
-    moodRatings: [7, 5, 8, 6, 9, 7],
-    averageMood: '7.0',
-    todaysMood: null,
-    factorCounts: {
-      'Exercise': 4,
-      'Work': 7,
-      'Socializing': 3,
-      'Nutrition': 2
-    }
+    user: process.env.USER_LOGIN || '67991023',
+    ...sampleData
+  });
+});
+
+// About page
+app.get('/about', (req, res) => {
+  res.render('about', { 
+    title: 'About MoodTrack',
+    currentTime: getCurrentDateTime(),
+    path: '/about',
+    user: process.env.USER_LOGIN || '67991023'
   });
 });
 
 // 404 handler
 app.use((req, res, next) => {
   res.status(404).render('error', { 
-    title: 'Page Not Found', 
+    title: 'Page Not Found - MoodTrack', 
     message: 'The page you requested does not exist.',
     currentTime: getCurrentDateTime(),
-    path: req.path
+    path: req.path,
+    user: process.env.USER_LOGIN || '67991023'
   });
 });
 
@@ -303,11 +370,12 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).render('error', { 
-    title: 'Server Error', 
+    title: 'Server Error - MoodTrack', 
     message: 'Something went wrong on our end. Please try again later.',
     currentTime: getCurrentDateTime(),
     path: req.path,
-    error: process.env.NODE_ENV === 'development' ? err : {}
+    error: process.env.NODE_ENV === 'development' ? err : {},
+    user: process.env.USER_LOGIN || '67991023'
   });
 });
 
