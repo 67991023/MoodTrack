@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
 const expressLayouts = require('express-ejs-layouts');
 
 // Load environment variables
@@ -15,25 +16,32 @@ const PORT = process.env.PORT || 3000;
 
 // Application startup logs
 console.log('Starting MoodTrack application...');
+console.log('Node environment:', process.env.NODE_ENV);
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+console.log('Middleware initialized');
 
 // Handle static files
-app.use(express.static(path.join(__dirname, 'public')));
+try {
+  app.use(express.static(path.join(__dirname, 'public')));
+  console.log('Static files directory:', path.join(__dirname, 'public'));
+} catch (err) {
+  console.error('Error setting up static files:', err);
+}
 
 // Setup view engine with layouts
-app.use(expressLayouts);
-app.set('layout', 'layout/main');
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-// Handle favicon requests to prevent 404 errors
-app.get('/favicon.ico', (req, res) => {
-  res.status(204).end(); // No content response
-});
+try {
+  app.use(expressLayouts);
+  app.set('layout', 'layout/main');
+  app.set('view engine', 'ejs');
+  app.set('views', path.join(__dirname, 'views'));
+  console.log('View engine set up');
+} catch (err) {
+  console.error('Error setting up view engine:', err);
+}
 
 // Get current date and time in YYYY-MM-DD HH:MM:SS format
 const getCurrentDateTime = () => {
@@ -48,7 +56,7 @@ const getCurrentDateTime = () => {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
 
-// Define default sample data for pages
+// Define default sample data for pages to avoid undefined errors
 const getSampleMoodData = () => {
   return {
     moodDates: ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20', 'Jun 21'],
@@ -66,12 +74,15 @@ const getSampleMoodData = () => {
   };
 };
 
+// MongoDB connection
+console.log('Connecting to MongoDB Atlas...');
+
 // Connect to MongoDB Atlas with fallback
 let dbConnected = false;
 
 mongoose
   .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/moodtrack', {
-    // Remove deprecated option
+    // Remove deprecated options
     serverSelectionTimeoutMS: 5000 // 5 second timeout for server selection
   })
   .then(() => {
@@ -83,30 +94,110 @@ mongoose
     console.log('Continuing without database connection. Using sample data.');
   });
 
-// Home page
+// MongoDB connection monitoring
+mongoose.connection.on('error', err => {
+  console.error('MongoDB connection error:', err);
+  dbConnected = false;
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected');
+  dbConnected = false;
+});
+
+mongoose.connection.on('connected', () => {
+  console.log('MongoDB reconnected');
+  dbConnected = true;
+});
+
+// Debug route for CSS
+app.get('/debug-css', (req, res) => {
+  try {
+    const publicDir = path.join(__dirname, 'public');
+    const cssDir = path.join(publicDir, 'css');
+    
+    let output = '<h1>Debugging CSS Loading</h1>';
+    
+    // Check if directories exist
+    output += '<h2>Directory Structure:</h2>';
+    output += `<p>Public directory exists: ${fs.existsSync(publicDir)}</p>`;
+    output += `<p>CSS directory exists: ${fs.existsSync(cssDir)}</p>`;
+    
+    // List files
+    if (fs.existsSync(cssDir)) {
+      output += '<h2>Files in CSS directory:</h2><ul>';
+      const files = fs.readdirSync(cssDir);
+      files.forEach(file => {
+        output += `<li>${file}</li>`;
+      });
+      output += '</ul>';
+    }
+    
+    // Check style.css specifically
+    const styleCssPath = path.join(cssDir, 'style.css');
+    output += `<p>style.css exists: ${fs.existsSync(styleCssPath)}</p>`;
+    
+    res.send(output);
+  } catch (error) {
+    res.status(500).send(`Error: ${error.message}`);
+  }
+});
+
+// Handle favicon requests to prevent 404 errors
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end(); // No content response
+});
+
+// Health check routes
+app.get('/test', (req, res) => {
+  res.send('Server is running correctly');
+});
+
+app.get('/api/status', (req, res) => {
+  try {
+    const dbStatus = mongoose.connection.readyState;
+    const dbStatusText = ['Disconnected', 'Connected', 'Connecting', 'Disconnecting'][dbStatus];
+    
+    res.json({
+      status: 'ok', 
+      message: 'API is working',
+      timestamp: new Date().toISOString(),
+      currentTime: getCurrentDateTime(),
+      db_status: dbStatusText,
+      environment: process.env.NODE_ENV || 'development'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message,
+      stack: process.env.NODE_ENV === 'production' ? '🥞' : error.stack
+    });
+  }
+});
+
+// Home page route
 app.get('/', (req, res) => {
-  res.render('index', { 
-    title: 'MoodTrack - Your Emotional Wellness Companion',
-    currentTime: getCurrentDateTime(),
-    path: '/',
-    user: process.env.USER_LOGIN || '67991023'
-  });
+  try {
+    res.render('index', { 
+      title: 'MoodTrack - Your Emotional Wellness Companion',
+      currentTime: getCurrentDateTime(),
+      path: '/',
+      user: process.env.USER_LOGIN || '67991023' 
+    });
+  } catch (err) {
+    console.error('Error rendering index:', err);
+    res.status(500).render('error', { 
+      title: 'Server Error - MoodTrack', 
+      message: 'Something went wrong on our end. Please try again later.',
+      currentTime: getCurrentDateTime(),
+      path: req.path,
+      error: process.env.NODE_ENV === 'development' ? err : {},
+      user: process.env.USER_LOGIN || '67991023'
+    });
+  }
 });
 
-// Dashboard page with sample data
-app.get('/dashboard', (req, res) => {
-  const sampleData = getSampleMoodData();
-  
-  res.render('dashboard', {
-    title: 'Your Wellness Dashboard - MoodTrack',
-    currentTime: getCurrentDateTime(),
-    path: '/dashboard',
-    user: process.env.USER_LOGIN || '67991023',
-    ...sampleData
-  });
-});
-
-// Moods pages
+// Moods routes
 app.get('/moods', (req, res) => {
   res.render('moods/index', { 
     title: 'Mood Tracking - MoodTrack',
@@ -127,7 +218,7 @@ app.get('/moods/new', (req, res) => {
   });
 });
 
-// FIX FOR AFFIRMATIONS PAGE - Add the today variable
+// Affirmations route - FIXED to include 'today'
 app.get('/affirmations', (req, res) => {
   try {
     const now = new Date();
@@ -153,26 +244,27 @@ app.get('/affirmations', (req, res) => {
   }
 });
 
-// Health check route
-app.get('/api/status', (req, res) => {
-  try {
-    const dbStatus = mongoose.connection.readyState;
-    const dbStatusText = ['Disconnected', 'Connected', 'Connecting', 'Disconnecting'][dbStatus];
-    
-    res.json({
-      status: 'ok', 
-      message: 'API is working',
-      timestamp: new Date().toISOString(),
-      currentTime: getCurrentDateTime(),
-      db_status: dbStatusText,
-      environment: process.env.NODE_ENV || 'development'
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      message: error.message
-    });
-  }
+// Dashboard page with sample data
+app.get('/dashboard', (req, res) => {
+  const sampleData = getSampleMoodData();
+  
+  res.render('dashboard', {
+    title: 'Your Wellness Dashboard - MoodTrack',
+    currentTime: getCurrentDateTime(),
+    path: '/dashboard',
+    user: process.env.USER_LOGIN || '67991023',
+    ...sampleData
+  });
+});
+
+// About page
+app.get('/about', (req, res) => {
+  res.render('about', { 
+    title: 'About MoodTrack',
+    currentTime: getCurrentDateTime(),
+    path: '/about',
+    user: process.env.USER_LOGIN || '67991023'
+  });
 });
 
 // 404 handler

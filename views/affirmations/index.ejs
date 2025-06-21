@@ -7,7 +7,7 @@
     <span class="affirmation-date"><%= today %></span>
     <p><%= dailyAffirmation || "I am worthy of love and respect. My feelings are valid and I deserve to take care of myself." %></p>
     <button class="btn share-btn">
-      <i class="fas fa-share-alt"></i> Share
+      Share
     </button>
   </div>
 </section>
@@ -30,42 +30,3 @@
     <p>Reminders to appreciate the abundance in your life.</p>
   </a>
 </section>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Affirmation card animation
-    const affirmationCard = document.querySelector('.affirmation-card');
-    if (affirmationCard) {
-      setTimeout(() => {
-        affirmationCard.classList.add('appear-active');
-      }, 300);
-    }
-    
-    // Share button functionality
-    const shareBtn = document.querySelector('.share-btn');
-    if (shareBtn) {
-      shareBtn.addEventListener('click', function() {
-        const affirmation = document.querySelector('.affirmation-card p').textContent;
-        
-        if (navigator.share) {
-          navigator.share({
-            title: 'My Daily Affirmation',
-            text: affirmation + ' - Shared from MoodTrack',
-            url: window.location.href
-          })
-          .catch(error => console.log('Error sharing:', error));
-        } else {
-          // Fallback for browsers that don't support Web Share API
-          const tempInput = document.createElement('input');
-          document.body.appendChild(tempInput);
-          tempInput.value = affirmation + ' - Shared from MoodTrack';
-          tempInput.select();
-          document.execCommand('copy');
-          document.body.removeChild(tempInput);
-          
-          alert('Affirmation copied to clipboard!');
-        }
-      });
-    }
-  });
-</script>
