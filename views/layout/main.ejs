@@ -41,31 +41,31 @@
       </button>
       <nav class="main-nav" role="navigation" aria-label="Main menu">
         <ul>
-          <li><a href="/" class="<%= path === '/' ? 'active' : '' %>" aria-current="<%= path === '/' ? 'page' : 'false' %>">Home</a></li>
-          <li><a href="/moods" class="<%= path && path.startsWith('/moods') ? 'active' : '' %>" aria-current="<%= path && path.startsWith('/moods') ? 'page' : 'false' %>">Moods</a></li>
-          <li><a href="/affirmations" class="<%= path && path.startsWith('/affirmations') ? 'active' : '' %>" aria-current="<%= path && path.startsWith('/affirmations') ? 'page' : 'false' %>">Affirmations</a></li>
-          <li><a href="/dashboard" class="<%= path === '/dashboard' ? 'active' : '' %>" aria-current="<%= path === '/dashboard' ? 'page' : 'false' %>">Dashboard</a></li>
+          <li><a href="/" class="<%= typeof path !== 'undefined' && path === '/' ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path === '/' ? 'page' : 'false' %>">Home</a></li>
+          <li><a href="/moods" class="<%= typeof path !== 'undefined' && path && path.startsWith('/moods') ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path && path.startsWith('/moods') ? 'page' : 'false' %>">Moods</a></li>
+          <li><a href="/affirmations" class="<%= typeof path !== 'undefined' && path && path.startsWith('/affirmations') ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path && path.startsWith('/affirmations') ? 'page' : 'false' %>">Affirmations</a></li>
+          <li><a href="/dashboard" class="<%= typeof path !== 'undefined' && path === '/dashboard' ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path === '/dashboard' ? 'page' : 'false' %>">Dashboard</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <% if (typeof messages !== 'undefined' && messages.success) { %>
+    <% if (typeof messages !== 'undefined' && messages && messages.success) { %>
       <div class="flash-message flash-success" role="alert">
         <div class="flash-icon">✓</div>
         <div class="flash-content"><%= messages.success %></div>
         <button class="flash-close" aria-label="Close message">×</button>
       </div>
     <% } %>
-    <% if (typeof messages !== 'undefined' && messages.error) { %>
+    <% if (typeof messages !== 'undefined' && messages && messages.error) { %>
       <div class="flash-message flash-error" role="alert">
         <div class="flash-icon">!</div>
         <div class="flash-content"><%= messages.error %></div>
         <button class="flash-close" aria-label="Close message">×</button>
       </div>
     <% } %>
-    <% if (typeof messages !== 'undefined' && messages.info) { %>
+    <% if (typeof messages !== 'undefined' && messages && messages.info) { %>
       <div class="flash-message flash-info" role="alert">
         <div class="flash-icon">i</div>
         <div class="flash-content"><%= messages.info %></div>
@@ -103,7 +103,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-21 12:15:07' %></p>
+        <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-21 12:29:48' %></p>
         <p>&copy; 2025 MoodTrack. All rights reserved.</p>
       </div>
     </div>

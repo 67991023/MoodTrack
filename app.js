@@ -157,6 +157,7 @@ if (indexRoutes) {
         user: process.env.USER_LOGIN || '67991023' 
       });
     } catch (err) {
+      console.error('Error rendering index:', err);
       res.send(`
         <!DOCTYPE html>
         <html>
@@ -267,25 +268,26 @@ if (affirmationsRoutes) {
       dailyAffirmation: "I am worthy of love and respect. My feelings are valid and I deserve to take care of myself."
     });
   });
-  
-  app.get('/dashboard', (req, res) => {
-    res.render('dashboard', {
-      title: 'Your Wellness Dashboard',
-      currentTime: getCurrentDateTime(),
-      path: '/dashboard',
-      moodDates: ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20'],
-      moodRatings: [7, 5, 8, 6, 9, 7],
-      averageMood: '7.0',
-      todaysMood: null,
-      factorCounts: {
-        'Exercise': 4,
-        'Work': 7,
-        'Socializing': 3,
-        'Nutrition': 2
-      }
-    });
-  });
 }
+
+// Always include a dedicated dashboard route to ensure all required variables are passed
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard', {
+    title: 'Your Wellness Dashboard',
+    currentTime: getCurrentDateTime(),
+    path: '/dashboard',
+    moodDates: ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20'],
+    moodRatings: [7, 5, 8, 6, 9, 7],
+    averageMood: '7.0',
+    todaysMood: null,
+    factorCounts: {
+      'Exercise': 4,
+      'Work': 7,
+      'Socializing': 3,
+      'Nutrition': 2
+    }
+  });
+});
 
 // 404 handler
 app.use((req, res, next) => {
