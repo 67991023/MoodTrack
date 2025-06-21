@@ -83,10 +83,44 @@
   </div>
 </section>
 
+<!-- Create a hidden div with the data to be read by JavaScript -->
+<div id="moodChartData" 
+     data-dates="<%= typeof moodDates !== 'undefined' && moodDates ? encodeURIComponent(JSON.stringify(moodDates)) : '[]' %>"
+     data-ratings="<%= typeof moodRatings !== 'undefined' && moodRatings ? encodeURIComponent(JSON.stringify(moodRatings)) : '[]' %>"
+     style="display:none;">
+</div>
+
 <script>
-// Put this script in a separate file later: public/js/moodChart.js
 document.addEventListener('DOMContentLoaded', function() {
-  // Default data for the chart
+  // Retrieve data from the hidden div
+  const chartDataElement = document.getElementById('moodChartData');
+  
+  // Decode the URL-encoded JSON strings
+  let moodDates = [];
+  let moodRatings = [];
+  
+  try {
+    const datesStr = chartDataElement.getAttribute('data-dates');
+    const ratingsStr = chartDataElement.getAttribute('data-ratings');
+    
+    if (datesStr) {
+      moodDates = JSON.parse(decodeURIComponent(datesStr));
+    }
+    
+    if (ratingsStr) {
+      moodRatings = JSON.parse(decodeURIComponent(ratingsStr));
+    }
+  } catch (error) {
+    console.error('Error parsing mood data:', error);
+  }
+  
+  // Format dates for display
+  const formattedDates = moodDates.map(date => {
+    const d = new Date(date);
+    return `${d.toLocaleString('default', {month: 'short'})} ${d.getDate()}`;
+  });
+  
+  // Default data for the chart if no user data is available
   const defaultDates = ['Jun 15', 'Jun 16', 'Jun 17', 'Jun 18', 'Jun 19', 'Jun 20'];
   const defaultRatings = [7, 5, 8, 6, 9, 7];
   
@@ -95,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const chart = new Chart(chartElement.getContext('2d'), {
       type: 'line',
       data: {
-        labels: defaultDates,
+        labels: formattedDates.length > 0 ? formattedDates : defaultDates,
         datasets: [{
           label: 'Mood Rating',
           backgroundColor: 'rgba(66, 133, 244, 0.2)',
@@ -104,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
           pointBackgroundColor: '#4285F4',
           pointRadius: 5,
           pointHoverRadius: 7,
-          data: defaultRatings,
+          data: moodRatings.length > 0 ? moodRatings : defaultRatings,
           tension: 0.2
         }]
       },
@@ -130,5 +164,3 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>

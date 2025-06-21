@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Track your moods, receive daily affirmations, and improve your mental wellbeing with MoodTrack">
   <meta name="theme-color" content="#4a90e2">
+  <meta name="keywords" content="mood tracking, mental health, wellbeing, affirmations, emotional health">
+  <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'MoodTrack' %>">
+  <meta property="og:description" content="Your personal companion for tracking moods and improving mental wellbeing">
+  <meta property="og:url" content="https://mood-track-theta.vercel.app">
+  <meta name="twitter:card" content="summary_large_image">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +20,10 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/style.css">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+  <!-- Chart.js - Load before it's used -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  
   <% if (typeof extraStyles !== 'undefined') { %>
     <%- extraStyles %>
   <% } %>
@@ -30,12 +39,12 @@
         <span></span>
         <span></span>
       </button>
-      <nav class="main-nav">
+      <nav class="main-nav" role="navigation" aria-label="Main menu">
         <ul>
-          <li><a href="/" class="<%= path === '/' ? 'active' : '' %>">Home</a></li>
-          <li><a href="/moods" class="<%= path && path.startsWith('/moods') ? 'active' : '' %>">Moods</a></li>
-          <li><a href="/affirmations" class="<%= path && path.startsWith('/affirmations') ? 'active' : '' %>">Affirmations</a></li>
-          <li><a href="/dashboard" class="<%= path === '/dashboard' ? 'active' : '' %>">Dashboard</a></li>
+          <li><a href="/" class="<%= path === '/' ? 'active' : '' %>" aria-current="<%= path === '/' ? 'page' : 'false' %>">Home</a></li>
+          <li><a href="/moods" class="<%= path && path.startsWith('/moods') ? 'active' : '' %>" aria-current="<%= path && path.startsWith('/moods') ? 'page' : 'false' %>">Moods</a></li>
+          <li><a href="/affirmations" class="<%= path && path.startsWith('/affirmations') ? 'active' : '' %>" aria-current="<%= path && path.startsWith('/affirmations') ? 'page' : 'false' %>">Affirmations</a></li>
+          <li><a href="/dashboard" class="<%= path === '/dashboard' ? 'active' : '' %>" aria-current="<%= path === '/dashboard' ? 'page' : 'false' %>">Dashboard</a></li>
         </ul>
       </nav>
     </div>
@@ -94,7 +103,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-21 08:23:27' %></p>
+        <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-21 12:15:07' %></p>
         <p>&copy; 2025 MoodTrack. All rights reserved.</p>
       </div>
     </div>
