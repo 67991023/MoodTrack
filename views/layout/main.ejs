@@ -5,7 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Track your moods, receive daily affirmations, and improve your mental wellbeing with MoodTrack">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap">
+  <meta name="theme-color" content="#4a90e2">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/style.css">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <% if (typeof extraStyles !== 'undefined') { %>
@@ -13,41 +20,84 @@
   <% } %>
 </head>
 <body class="page-transition">
-  <header>
-    <h1>MoodTrack</h1>
-    <nav>
-      <ul>
-        <li><a href="/" class="<%= path === '/' ? 'active' : '' %>">Home</a></li>
-        <li><a href="/moods" class="<%= path && path.startsWith('/moods') ? 'active' : '' %>">Moods</a></li>
-        <li><a href="/affirmations" class="<%= path && path.startsWith('/affirmations') ? 'active' : '' %>">Affirmations</a></li>
-        <li><a href="/dashboard" class="<%= path === '/dashboard' ? 'active' : '' %>">Dashboard</a></li>
-      </ul>
-    </nav>
+  <header class="app-header">
+    <div class="container header-container">
+      <a href="/" class="logo-link">
+        <h1 class="logo">MoodTrack</h1>
+      </a>
+      <button id="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/" class="<%= path === '/' ? 'active' : '' %>">Home</a></li>
+          <li><a href="/moods" class="<%= path && path.startsWith('/moods') ? 'active' : '' %>">Moods</a></li>
+          <li><a href="/affirmations" class="<%= path && path.startsWith('/affirmations') ? 'active' : '' %>">Affirmations</a></li>
+          <li><a href="/dashboard" class="<%= path === '/dashboard' ? 'active' : '' %>">Dashboard</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
-  <main>
+  <main class="container">
     <% if (typeof messages !== 'undefined' && messages.success) { %>
-      <div class="flash-message flash-success">
-        <%= messages.success %>
+      <div class="flash-message flash-success" role="alert">
+        <div class="flash-icon">✓</div>
+        <div class="flash-content"><%= messages.success %></div>
+        <button class="flash-close" aria-label="Close message">×</button>
       </div>
     <% } %>
     <% if (typeof messages !== 'undefined' && messages.error) { %>
-      <div class="flash-message flash-error">
-        <%= messages.error %>
+      <div class="flash-message flash-error" role="alert">
+        <div class="flash-icon">!</div>
+        <div class="flash-content"><%= messages.error %></div>
+        <button class="flash-close" aria-label="Close message">×</button>
       </div>
     <% } %>
     <% if (typeof messages !== 'undefined' && messages.info) { %>
-      <div class="flash-message flash-info">
-        <%= messages.info %>
+      <div class="flash-message flash-info" role="alert">
+        <div class="flash-icon">i</div>
+        <div class="flash-content"><%= messages.info %></div>
+        <button class="flash-close" aria-label="Close message">×</button>
       </div>
     <% } %>
     
-    <%- body %>
+    <div class="content-wrapper">
+      <%- body %>
+    </div>
   </main>
 
-  <footer>
-    <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-20 15:52:44' %></p>
-    <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+  <footer class="app-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>MoodTrack</h3>
+          <p>Your daily companion for mental wellbeing</p>
+        </div>
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/moods">Mood Tracking</a></li>
+            <li><a href="/affirmations">Daily Affirmations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Connect</h4>
+          <div class="social-icons">
+            <a href="#" aria-label="Facebook"><span class="icon-facebook"></span></a>
+            <a href="#" aria-label="Twitter"><span class="icon-twitter"></span></a>
+            <a href="#" aria-label="Instagram"><span class="icon-instagram"></span></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-21 08:23:27' %></p>
+        <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+      </div>
+    </div>
   </footer>
   
   <script src="/js/main.js"></script>

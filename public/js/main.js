@@ -1,157 +1,180 @@
-// MoodTrack Main JavaScript
+/**
+ * MoodTrack - Main JavaScript
+ */
 
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('MoodTrack application loaded');
-  
-  // Appearance animation for elements with data-appear attribute
-  const appearElements = document.querySelectorAll('[data-appear]');
-  
-  if (appearElements.length > 0) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('appear-active');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    
-    appearElements.forEach((element, index) => {
-      observer.observe(element);
-      // Add staggered delay based on element position
-      const delay = index * 200;
-      element.style.transitionDelay = `${delay}ms`;
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  if (menuToggle) {
+    menuToggle.addEventListener('click', function() {
+      document.body.classList.toggle('menu-open');
     });
   }
-  
-  // Add date picker default value
-  const datePicker = document.getElementById('date');
-  if (datePicker) {
-    const today = new Date().toISOString().split('T')[0];
-    datePicker.value = today;
-  }
-  
-  // Intensity slider value display
-  const intensitySlider = document.getElementById('intensity');
-  const intensityValue = document.querySelector('.intensity-value');
-  
-  if (intensitySlider && intensityValue) {
-    intensitySlider.addEventListener('input', function() {
-      intensityValue.textContent = this.value;
+
+  // Close menu when clicking outside
+  document.addEventListener('click', function(event) {
+    if (document.body.classList.contains('menu-open') && 
+        !event.target.closest('.main-nav') && 
+        !event.target.closest('#menu-toggle')) {
+      document.body.classList.remove('menu-open');
+    }
+  });
+
+  // Flash message close buttons
+  const flashCloseButtons = document.querySelectorAll('.flash-close');
+  flashCloseButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      this.parentElement.style.opacity = '0';
+      setTimeout(() => {
+        this.parentElement.style.display = 'none';
+      }, 300);
     });
-  }
-  
-  // Mobile navigation toggle
-  const mobileNavToggle = document.createElement('button');
-  mobileNavToggle.classList.add('mobile-nav-toggle');
-  mobileNavToggle.innerHTML = '☰';
-  
-  const header = document.querySelector('header');
-  const nav = document.querySelector('nav');
-  
-  if (header && nav) {
-    header.insertBefore(mobileNavToggle, nav);
-    
-    mobileNavToggle.addEventListener('click', function() {
-      nav.classList.toggle('active');
-    });
-  }
-  
-  // Flash messages
+  });
+
+  // Auto dismiss flash messages after 5 seconds
   const flashMessages = document.querySelectorAll('.flash-message');
   flashMessages.forEach(message => {
     setTimeout(() => {
-      message.classList.add('fade-out');
+      message.style.opacity = '0';
       setTimeout(() => {
-        message.remove();
-      }, 500);
+        message.style.display = 'none';
+      }, 300);
     }, 5000);
   });
-  
-  // Category filtering for affirmations
-  const categoryButtons = document.querySelectorAll('.category-card');
-  const affirmationItems = document.querySelectorAll('.affirmation-item');
-  
-  if (categoryButtons.length > 0 && affirmationItems.length > 0) {
-    categoryButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+
+  // Mood tracking form enhancement
+  const moodForm = document.querySelector('.mood-form');
+  if (moodForm) {
+    const moodButtons = document.querySelectorAll('.mood-button');
+    const moodInput = document.querySelector('input[name="mood"]');
+    
+    moodButtons.forEach(button => {
+      button.addEventListener('click', function() {
         // Remove active class from all buttons
-        categoryButtons.forEach(btn => btn.classList.remove('active'));
+        moodButtons.forEach(btn => btn.classList.remove('active'));
         
         // Add active class to clicked button
         this.classList.add('active');
         
-        const selectedCategory = this.dataset.category;
-        
-        // Filter affirmations
-        affirmationItems.forEach(item => {
-          if (selectedCategory === 'all' || item.dataset.category === selectedCategory) {
-            item.style.display = 'block';
-          } else {
-            item.style.display = 'none';
-          }
-        });
+        // Update hidden input value
+        if (moodInput) {
+          moodInput.value = this.dataset.value;
+        }
       });
     });
   }
-  
-  // Share button functionality
-  const shareBtn = document.querySelector('.share-btn');
-  if (shareBtn) {
-    shareBtn.addEventListener('click', function() {
-      const affirmation = document.querySelector('.affirmation-card p').textContent;
-      
-      // Check if Web Share API is available
-      if (navigator.share) {
-        navigator.share({
-          title: 'Today\'s Affirmation from MoodTrack',
-          text: affirmation + ' #MoodTrack',
-          url: window.location.href
-        }).catch(error => {
-          console.log('Error sharing:', error);
-        });
-      } else {
-        // Fallback
-        const textArea = document.createElement('textarea');
-        textArea.value = affirmation + ' #MoodTrack';
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        
-        alert('Affirmation copied to clipboard!');
-      }
-    });
+
+  // Chart initialization for dashboard
+  const moodChartEl = document.getElementById('moodChart');
+  if (moodChartEl && window.Chart) {
+    initMoodChart(moodChartEl);
   }
-  
-  // Save buttons
-  const saveButtons = document.querySelectorAll('.save-btn');
-  saveButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      this.innerHTML = 'Saved ✓';
-      this.classList.add('saved');
-      this.disabled = true;
+
+  // Form validation
+  const forms = document.querySelectorAll('form[data-validate]');
+  forms.forEach(form => {
+    form.addEventListener('submit', function(event) {
+      const requiredFields = form.querySelectorAll('[required]');
+      let isValid = true;
       
-      // Reset after 2 seconds
-      setTimeout(() => {
-        this.innerHTML = 'Save';
-        this.classList.remove('saved');
-        this.disabled = false;
-      }, 2000);
+      requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+          isValid = false;
+          field.classList.add('error');
+          
+          // Create or update error message
+          let errorMsg = field.parentElement.querySelector('.error-message');
+          if (!errorMsg) {
+            errorMsg = document.createElement('div');
+            errorMsg.className = 'error-message';
+            field.parentElement.appendChild(errorMsg);
+          }
+          errorMsg.textContent = 'This field is required';
+        } else {
+          field.classList.remove('error');
+          const errorMsg = field.parentElement.querySelector('.error-message');
+          if (errorMsg) {
+            errorMsg.remove();
+          }
+        }
+      });
+      
+      if (!isValid) {
+        event.preventDefault();
+      }
     });
   });
-  
-  // Delete confirmation for mood entries
-  const deleteBtn = document.querySelector('.delete-btn');
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', function() {
-      if (confirm('Are you sure you want to delete this mood entry? This action cannot be undone.')) {
-        // In a real app, this would make a DELETE request to the server
-        alert('Entry deleted.');
-        window.location.href = '/moods';
-      }
-    });
-  }
 });
+
+// Initialize mood chart (if Chart.js is available)
+function initMoodChart(canvas) {
+  // Sample data - replace with actual data from backend
+  const chartData = {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [{
+      label: 'Mood Level',
+      data: [4, 3, 5, 2, 3, 4, 5],
+      backgroundColor: 'rgba(74, 144, 226, 0.2)',
+      borderColor: 'rgba(74, 144, 226, 1)',
+      borderWidth: 2,
+      tension: 0.4
+    }]
+  };
+
+  new Chart(canvas, {
+    type: 'line',
+    data: chartData,
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 5,
+          ticks: {
+            stepSize: 1,
+            callback: function(value) {
+              const labels = ['', 'Terrible', 'Bad', 'Neutral', 'Good', 'Great'];
+              return labels[value] || '';
+            }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
+}
+
+// Add animation on scroll
+const animateOnScroll = function() {
+  const elements = document.querySelectorAll('.animate-on-scroll');
+  
+  elements.forEach(element => {
+    const elementPosition = element.getBoundingClientRect().top;
+    const screenPosition = window.innerHeight / 1.3;
+    
+    if (elementPosition < screenPosition) {
+      element.classList.add('animated');
+    }
+  });
+};
+
+window.addEventListener('scroll', animateOnScroll);
+// Run once on page load
+document.addEventListener('DOMContentLoaded', animateOnScroll);
