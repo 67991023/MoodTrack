@@ -4,78 +4,44 @@
   <title><%= typeof title !== 'undefined' ? title : 'MoodTrack' %></title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Track your moods, receive daily affirmations, and improve your mental wellbeing with MoodTrack">
-  <meta name="theme-color" content="#4a90e2">
-  <meta name="keywords" content="mood tracking, mental health, wellbeing, affirmations, emotional health">
-  <meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'MoodTrack' %>">
-  <meta property="og:description" content="Your personal companion for tracking moods and improving mental wellbeing">
-  <meta property="og:url" content="https://mood-track-theta.vercel.app">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="description" content="Track your moods, receive daily affirmations, and improve your mental wellbeing">
+  
+  <!-- Prevents favicon.ico requests -->
+  <link rel="icon" href="data:,">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Stylesheets -->
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  
+  <!-- CSS -->
   <link rel="stylesheet" href="/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍃</text></svg>">
-
-  <!-- Chart.js - Load before it's used -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-  
-  <% if (typeof extraStyles !== 'undefined') { %>
-    <%- extraStyles %>
-  <% } %>
 </head>
-<body class="page-transition">
+<body>
   <header class="app-header">
     <div class="container header-container">
-      <a href="/" class="logo-link">
-        <h1 class="logo">MoodTrack</h1>
-      </a>
+      <a href="/" class="logo">MoodTrack</a>
       <button id="menu-toggle" aria-label="Toggle menu">
         <span></span>
         <span></span>
         <span></span>
       </button>
-      <nav class="main-nav" role="navigation" aria-label="Main menu">
+      <nav class="main-nav">
         <ul>
-          <li><a href="/" class="<%= typeof path !== 'undefined' && path === '/' ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path === '/' ? 'page' : 'false' %>">Home</a></li>
-          <li><a href="/moods" class="<%= typeof path !== 'undefined' && path && path.startsWith('/moods') ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path && path.startsWith('/moods') ? 'page' : 'false' %>">Moods</a></li>
-          <li><a href="/affirmations" class="<%= typeof path !== 'undefined' && path && path.startsWith('/affirmations') ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path && path.startsWith('/affirmations') ? 'page' : 'false' %>">Affirmations</a></li>
-          <li><a href="/dashboard" class="<%= typeof path !== 'undefined' && path === '/dashboard' ? 'active' : '' %>" aria-current="<%= typeof path !== 'undefined' && path === '/dashboard' ? 'page' : 'false' %>">Dashboard</a></li>
+          <li><a href="/" class="<%= typeof path !== 'undefined' && path === '/' ? 'active' : '' %>">Home</a></li>
+          <li><a href="/moods" class="<%= typeof path !== 'undefined' && path && path.startsWith('/moods') ? 'active' : '' %>">Moods</a></li>
+          <li><a href="/affirmations" class="<%= typeof path !== 'undefined' && path && path === '/affirmations' ? 'active' : '' %>">Affirmations</a></li>
+          <li><a href="/dashboard" class="<%= typeof path !== 'undefined' && path === '/dashboard' ? 'active' : '' %>">Dashboard</a></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  <main class="container">
-    <% if (typeof messages !== 'undefined' && messages && messages.success) { %>
-      <div class="flash-message flash-success" role="alert">
-        <div class="flash-icon">✓</div>
-        <div class="flash-content"><%= messages.success %></div>
-        <button class="flash-close" aria-label="Close message">×</button>
-      </div>
-    <% } %>
-    <% if (typeof messages !== 'undefined' && messages && messages.error) { %>
-      <div class="flash-message flash-error" role="alert">
-        <div class="flash-icon">!</div>
-        <div class="flash-content"><%= messages.error %></div>
-        <button class="flash-close" aria-label="Close message">×</button>
-      </div>
-    <% } %>
-    <% if (typeof messages !== 'undefined' && messages && messages.info) { %>
-      <div class="flash-message flash-info" role="alert">
-        <div class="flash-icon">i</div>
-        <div class="flash-content"><%= messages.info %></div>
-        <button class="flash-close" aria-label="Close message">×</button>
-      </div>
-    <% } %>
-    
-    <div class="content-wrapper">
-      <%- body %>
-    </div>
+  <main>
+    <%- body %>
   </main>
 
   <footer class="app-footer">
@@ -91,27 +57,33 @@
             <li><a href="/">Home</a></li>
             <li><a href="/moods">Mood Tracking</a></li>
             <li><a href="/affirmations">Daily Affirmations</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Connect</h4>
           <div class="social-icons">
-            <a href="#" aria-label="Facebook"><span class="icon-facebook"></span></a>
-            <a href="#" aria-label="Twitter"><span class="icon-twitter"></span></a>
-            <a href="#" aria-label="Instagram"><span class="icon-instagram"></span></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : '2025-06-21 12:29:48' %></p>
-        <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+        <p>Current time: <%= typeof currentTime !== 'undefined' ? currentTime : new Date().toISOString() %></p>
+        <p>&copy; <%= new Date().getFullYear() %> MoodTrack. All rights reserved.</p>
+        <% if (typeof user !== 'undefined') { %>
+        <p><small>User: <%= user %></small></p>
+        <% } %>
       </div>
     </div>
   </footer>
   
-  <script src="/js/main.js"></script>
-  <% if (typeof extraScripts !== 'undefined') { %>
-    <%- extraScripts %>
-  <% } %>
+  <script>
+    // Mobile menu toggle
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+      document.querySelector('.main-nav').classList.toggle('active');
+    });
+  </script>
 </body>
 </html>
