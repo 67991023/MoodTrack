@@ -148,6 +148,7 @@ a:hover {
   background-color: var(--bg-secondary);
   border-radius: 8px;
   box-shadow: var(--shadow-sm);
+  padding: 3px;
 }
 
 /* Header and Footer */
@@ -200,24 +201,14 @@ input:focus, textarea:focus, select:focus {
   box-shadow: var(--shadow-sm);
 }
 
-/* Affirmation card - UPDATED */
 .affirmation-card {
-  background-color: var(--bg-secondary);
-  color: var(--affirmation-text); /* Use the new affirmation text color */
+  background-color: var(--accent-primary);
+  color: var(--text-primary);
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
   position: relative;
   box-shadow: var(--shadow-md);
-  border: 2px solid var(--green-light);
-}
-
-.affirmation-card p {
-  font-size: 1.5rem;
-  font-weight: 500;
-  line-height: 1.4;
-  margin: 1rem 0 2rem;
-  color: var(--affirmation-text); /* Ensure text is dark green */
 }
 
 [data-theme="dark"] .affirmation-card {
