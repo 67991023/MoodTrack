@@ -4,6 +4,10 @@
     {
       "src": "app.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -24,8 +28,12 @@
       "dest": "/public/favicon.ico"
     },
     {
-      "src": "/(.*)",
-      "dest": "/app.js"
+      "src": "/(.+)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/",
+      "dest": "app.js"
     }
   ],
   "env": {
