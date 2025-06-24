@@ -5,25 +5,25 @@
 
 /* Base Theme Variables */
 :root {
-  /* Light theme (default) */
-  --bg-primary: #f9f9f9;
+  /* Light theme (default) - UPDATED with light green background */
+  --bg-primary: #e8f5e9; /* Light green background instead of #f9f9f9 */
   --bg-secondary: #ffffff;
-  --bg-tertiary: #f4f8f6;
+  --bg-tertiary: #f1f8f2; /* Slightly darker than bg-primary for contrast */
   
   --text-primary: #333333;
   --text-secondary: #555555;
   --text-muted: #6c6c6c;
   
-  --green-primary: #4a8072;
-  --green-light: #8fb5a3;
-  --green-dark: #336353;
-  --green-bg: #ecf5f1;
+  --green-primary: #2e7d32; /* Darker green for better contrast */
+  --green-light: #60ad5e;
+  --green-dark: #005005;
+  --green-bg: #c8e6c9;
   
   --accent-primary: #f4bc8c;
   --accent-secondary: #8e5b7d;
   
-  --border-color: #e0e0e0;
-  --divider-color: #f0f0f0;
+  --border-color: #c8e6c9; /* Light green border */
+  --divider-color: #e0e0e0;
   
   --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -38,28 +38,31 @@
   --transition-fast: 0.15s;
   --transition-normal: 0.3s;
   --transition-slow: 0.5s;
+  
+  /* Affirmation text color - NEW */
+  --affirmation-text: #2e7d32;
 }
 
 /* Dark theme */
 [data-theme="dark"] {
-  --bg-primary: #121212;
-  --bg-secondary: #1e1e1e;
-  --bg-tertiary: #252525;
+  --bg-primary: #0c130d; /* Dark green-tinted background */
+  --bg-secondary: #1a2e1c; /* Dark green-tinted card background */
+  --bg-tertiary: #1c2e1e;
   
   --text-primary: #e0e0e0;
   --text-secondary: #cccccc;
   --text-muted: #a0a0a0;
   
-  --green-primary: #5d9e8f;
-  --green-light: #7abcad;
-  --green-dark: #3d6a5d;
-  --green-bg: #1e2b28;
+  --green-primary: #4caf50;
+  --green-light: #80e27e;
+  --green-dark: #087f23;
+  --green-bg: #1b2f1d;
   
   --accent-primary: #d9a97e;
   --accent-secondary: #9c6b8b;
   
-  --border-color: #333333;
-  --divider-color: #282828;
+  --border-color: #2e3e30;
+  --divider-color: #1f2d21;
   
   --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.25);
@@ -69,6 +72,9 @@
   --warning: #ffa726;
   --error: #e57373;
   --info: #42a5f5;
+  
+  /* Affirmation text color - NEW */
+  --affirmation-text: #81c784;
 }
 
 /* Theme transitions */
@@ -194,14 +200,24 @@ input:focus, textarea:focus, select:focus {
   box-shadow: var(--shadow-sm);
 }
 
+/* Affirmation card - UPDATED */
 .affirmation-card {
-  background-color: var(--accent-primary);
-  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  color: var(--affirmation-text); /* Use the new affirmation text color */
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
   position: relative;
   box-shadow: var(--shadow-md);
+  border: 2px solid var(--green-light);
+}
+
+.affirmation-card p {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin: 1rem 0 2rem;
+  color: var(--affirmation-text); /* Ensure text is dark green */
 }
 
 [data-theme="dark"] .affirmation-card {

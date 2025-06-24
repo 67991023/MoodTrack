@@ -18,6 +18,7 @@
   
   <!-- External CSS with timestamp to prevent caching -->
   <link rel="stylesheet" href="https://mood-track-theta.vercel.app/css/style.css?v=<%= new Date().getTime() %>">
+  <link rel="stylesheet" href="https://mood-track-theta.vercel.app/css/custom.css?v=<%= new Date().getTime() %>">
   
   <!-- Preload theme switch to prevent flash of incorrect theme -->
   <script>
@@ -29,6 +30,21 @@
       document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
+  <style>
+  body {
+    background-color: #e8f5e9 !important;
+  }
+  
+  .affirmation-card {
+    background-color: white !important;
+    border: 2px solid #60ad5e !important;
+  }
+  
+  .affirmation-card p {
+    color: #2e7d32 !important;
+    font-weight: 500 !important;
+  }
+</style>
 </head>
 <body>
   <header class="app-header">

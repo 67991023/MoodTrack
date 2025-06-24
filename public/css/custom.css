@@ -1,0 +1,23 @@
+/* Custom overrides for MoodTrack */
+
+/* Ensure body background is light green */
+body {
+  background-color: var(--bg-primary) !important;
+}
+
+/* Force affirmation text to be dark green */
+.affirmation-card p {
+  color: var(--affirmation-text) !important;
+  font-weight: 500 !important;
+}
+
+/* Enhance the affirmation card appearance */
+.affirmation-card {
+  background-color: var(--bg-secondary) !important;
+  border: 2px solid var(--green-light) !important;
+}
+
+/* Add a subtle green tint to all cards */
+.card, .category-card, .stat-card, .mood-tracker-card {
+  border-left: 3px solid var(--green-primary);
+}
