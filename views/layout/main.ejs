@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <title><%= typeof title !== 'undefined' ? title : 'MoodTrack' %></title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#4a8072">
   
   <!-- Empty favicon to prevent 404 errors -->
   <link rel="icon" href="data:,">
@@ -11,96 +13,65 @@
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Inline critical CSS (will work even if external CSS fails) -->
-  <style>
-    body {
-      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-    .app-header {
-      background-color: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      padding: 1rem 0;
-    }
-    .header-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #4a8072;
-      text-decoration: none;
-    }
-    .main-nav ul {
-      list-style: none;
-      display: flex;
-      gap: 1rem;
-      margin: 0;
-      padding: 0;
-    }
-    .main-nav ul li a {
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      color: #333;
-      text-decoration: none;
-    }
-    .main-nav ul li a.active {
-      background-color: #4a8072;
-      color: white;
-    }
-    .affirmation-card {
-      background-color: #f4bc8c;
-      color: #333;
-      border-radius: 8px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      margin: 1.5rem 0;
-      position: relative;
-    }
-    .affirmation-date {
-      position: absolute;
-      top: 0.5rem;
-      right: 1rem;
-      font-size: 0.9rem;
-      color: rgba(0, 0, 0, 0.5);
-    }
-  </style>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   
   <!-- External CSS with timestamp to prevent caching -->
   <link rel="stylesheet" href="https://mood-track-theta.vercel.app/css/style.css?v=<%= new Date().getTime() %>">
+  
+  <!-- Preload theme switch to prevent flash of incorrect theme -->
+  <script>
+    // Immediately set theme to prevent flash
+    (function() {
+      var savedTheme = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
   <header class="app-header">
     <div class="container header-container">
-      <a href="/" class="logo">MoodTrack</a>
-      <button id="menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      <a href="/" class="logo">
+        <i class="fas fa-leaf"></i> MoodTrack
+      </a>
+      
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <!-- Theme toggle button -->
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+          <span id="theme-toggle-text">Dark Mode</span>
+        </button>
+        
+        <button id="menu-toggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      
       <nav class="main-nav">
         <ul>
-          <li><a href="/" class="<%= typeof path !== 'undefined' && path === '/' ? 'active' : '' %>">Home</a></li>
-          <li><a href="/moods" class="<%= typeof path !== 'undefined' && path && path.startsWith('/moods') ? 'active' : '' %>">Moods</a></li>
-          <li><a href="/affirmations" class="<%= typeof path !== 'undefined' && path && path === '/affirmations' ? 'active' : '' %>">Affirmations</a></li>
-          <li><a href="/dashboard" class="<%= typeof path !== 'undefined' && path === '/dashboard' ? 'active' : '' %>">Dashboard</a></li>
+          <li><a href="/" class="<%= typeof path !== 'undefined' && path === '/' ? 'active' : '' %>">
+            <i class="fas fa-home"></i> Home
+          </a></li>
+          <li><a href="/moods" class="<%= typeof path !== 'undefined' && path && path.startsWith('/moods') ? 'active' : '' %>">
+            <i class="fas fa-chart-line"></i> Moods
+          </a></li>
+          <li><a href="/affirmations" class="<%= typeof path !== 'undefined' && path && path === '/affirmations' ? 'active' : '' %>">
+            <i class="fas fa-heart"></i> Affirmations
+          </a></li>
+          <li><a href="/dashboard" class="<%= typeof path !== 'undefined' && path === '/dashboard' ? 'active' : '' %>">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a></li>
+          <a href="#main-content" class="skip-link">Skip to content</a>
         </ul>
       </nav>
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <div class="container">
       <%- body %>
     </div>
@@ -110,21 +81,21 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-col">
-          <h3>MoodTrack</h3>
+          <h3><i class="fas fa-leaf"></i> MoodTrack</h3>
           <p>Your daily companion for mental wellbeing</p>
         </div>
         <div class="footer-col">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/moods">Mood Tracking</a></li>
-            <li><a href="/affirmations">Daily Affirmations</a></li>
-            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/moods"><i class="fas fa-chart-line"></i> Mood Tracking</a></li>
+            <li><a href="/affirmations"><i class="fas fa-heart"></i> Daily Affirmations</a></li>
+            <li><a href="/dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Connect</h4>
-          <p>Coming soon!</p>
+          <p><i class="fas fa-code"></i> Coming soon!</p>
         </div>
       </div>
       <div class="footer-bottom">
@@ -137,7 +108,10 @@
     </div>
   </footer>
   
-  <!-- Inline JavaScript -->
+  <!-- Theme management JavaScript -->
+  <script src="https://mood-track-theta.vercel.app/js/theme.js?v=<%= new Date().getTime() %>"></script>
+  
+  <!-- Main JavaScript -->
   <script>
     // Mobile menu toggle
     document.addEventListener('DOMContentLoaded', function() {

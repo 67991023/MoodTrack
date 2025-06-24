@@ -267,6 +267,16 @@ app.get('/about', (req, res) => {
   });
 });
 
+// Settings page
+app.get('/settings', (req, res) => {
+  res.render('settings', { 
+    title: 'Settings - MoodTrack',
+    currentTime: getCurrentDateTime(),
+    path: '/settings',
+    user: process.env.USER_LOGIN || '67991023'
+  });
+});
+
 // 404 handler
 app.use((req, res, next) => {
   res.status(404).render('error', { 
