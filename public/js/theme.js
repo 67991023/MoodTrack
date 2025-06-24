@@ -87,6 +87,44 @@ document.addEventListener('DOMContentLoaded', function() {
       themeToggleIcon.className = 'fas fa-moon';
     }
   }
+
+  /**
+ * Apply theme to document and save preference
+ * @param {string} theme - Theme to apply ('light' or 'dark')
+ * @param {boolean} withTransition - Whether to animate the transition
+ */
+function setTheme(theme, withTransition = true) {
+  // Add transition class if needed
+  if (withTransition) {
+    html.classList.add(TRANSITION_CLASS);
+    
+    // Remove transition class after animation completes
+    setTimeout(() => {
+      html.classList.remove(TRANSITION_CLASS);
+    }, 300);
+  }
+  
+  // Apply theme attribute
+  html.setAttribute('data-theme', theme);
+  
+  // Force a repaint to ensure theme changes apply
+  document.body.style.display = 'none';
+  document.body.offsetHeight; // Trigger a reflow
+  document.body.style.display = '';
+  
+  // Save preference
+  localStorage.setItem(STORAGE_KEY, theme);
+  
+  // Update meta theme-color for browser UI
+  const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+  if (metaThemeColor) {
+    metaThemeColor.setAttribute('content', 
+      theme === THEMES.DARK ? '#0c130d' : '#4a8072');
+  }
+  
+  // Update toggle button appearance
+  updateThemeToggleAppearance(theme);
+}
   
   // Set up event listeners
   if (themeToggle) {

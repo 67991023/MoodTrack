@@ -10,17 +10,14 @@
   <!-- Empty favicon to prevent 404 errors -->
   <link rel="icon" href="data:,">
   
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   
-  <!-- External CSS with timestamp to prevent caching -->
   <link rel="stylesheet" href="https://mood-track-theta.vercel.app/css/style.css?v=<%= new Date().getTime() %>">
   <link rel="stylesheet" href="https://mood-track-theta.vercel.app/css/custom.css?v=<%= new Date().getTime() %>">
-  
-  <!-- Preload theme switch to prevent flash of incorrect theme -->
+
   <script>
     // Immediately set theme to prevent flash
     (function() {
@@ -50,16 +47,21 @@
   <header class="app-header">
     <div class="container header-container">
       <a href="/" class="logo">
-        <i class="fas fa-leaf"></i> MoodTrack
+        <i class="fas fa-leaf"></i> AegisAI
       </a>
       
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <div class="top-right-nav">
         <!-- Theme toggle button -->
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
           <i class="fas fa-moon"></i>
           <span id="theme-toggle-text">Dark Mode</span>
         </button>
-        
+  
+        <!-- User logout button -->
+        <a href="/logout" class="user-logout" title="Log out" aria-label="Log out">
+          <i class="fas fa-user"></i>
+        </a>
+  
         <button id="menu-toggle" aria-label="Toggle menu">
           <span></span>
           <span></span>

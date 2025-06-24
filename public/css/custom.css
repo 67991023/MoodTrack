@@ -1,11 +1,51 @@
 /* Custom overrides for MoodTrack */
 
-/* Ensure body background is light green */
+/* Light Mode Styles */
+:root {
+  --bg-primary: #e8f5e9 !important; /* Light green background */
+  --bg-secondary: #ffffff !important;
+  --bg-tertiary: #f1f8f2 !important;
+  --affirmation-text: #2e7d32 !important;
+}
+
+/* Dark Mode Styles - Ensure these are applied */
+[data-theme="dark"] {
+  --bg-primary: #0c130d !important; /* Dark green-tinted background */
+  --bg-secondary: #1a2e1c !important; /* Dark green-tinted card background */
+  --bg-tertiary: #1c2e1e !important;
+  --text-primary: #e0e0e0 !important;
+  --text-secondary: #cccccc !important;
+  --affirmation-text: #81c784 !important; /* Light green text in dark mode */
+}
+
+/* Base background colors */
 body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Content sections */
+main {
   background-color: var(--bg-primary) !important;
 }
 
-/* Force affirmation text to be dark green */
+/* Card backgrounds */
+.card, 
+.category-card, 
+.stat-card, 
+.mood-tracker-card,
+.affirmation-card,
+.page-header {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Ensure text colors change with theme */
+p, h1, h2, h3, h4, h5, h6, span, div {
+  color: var(--text-primary) !important;
+}
+
+/* Force affirmation text to use the right color */
 .affirmation-card p {
   color: var(--affirmation-text) !important;
   font-weight: 500 !important;
@@ -13,11 +53,53 @@ body {
 
 /* Enhance the affirmation card appearance */
 .affirmation-card {
-  background-color: var(--bg-secondary) !important;
   border: 2px solid var(--green-light) !important;
 }
 
 /* Add a subtle green tint to all cards */
 .card, .category-card, .stat-card, .mood-tracker-card {
-  border-left: 3px solid var(--green-primary);
+  border-left: 3px solid var(--green-primary) !important;
+}
+
+/* Ensure footer uses correct background */
+.app-footer {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Header uses correct background */
+.app-header {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* User logout button */
+.user-logout {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  height: 36px;
+  width: 36px;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all var(--transition-normal) ease;
+  margin-left: 0.5rem;
+}
+
+.user-logout:hover {
+  background-color: var(--green-primary);
+  color: white;
+}
+
+.top-right-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Ensure transitions work smoothly */
+body, .card, .category-card, .stat-card, .mood-tracker-card, .affirmation-card {
+  transition: background-color 0.3s ease, color 0.3s ease !important;
 }
