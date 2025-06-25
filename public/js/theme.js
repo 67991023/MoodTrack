@@ -30,9 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setTheme(theme, false);
   }
   
-  /**
-   * Toggle between light and dark themes
-   */
   function toggleTheme() {
     const currentTheme = html.getAttribute('data-theme');
     const newTheme = currentTheme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK;

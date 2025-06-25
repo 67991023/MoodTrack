@@ -177,6 +177,56 @@ main {
   color: var(--text-secondary);
 }
 
+.intensity-container {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.intensity-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.intensity-slider {
+  flex: 1;
+}
+
+.intensity-value {
+  min-width: 2rem;
+  text-align: center;
+}
+
+/* Range input styling */
+input[type="range"] {
+  width: 100%;
+  margin: 0.5rem 0;
+}
+
+/* Intensity labels */
+.intensity-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.form-group.notes-group {
+  margin-top: 1.5rem;
+}
+
+.notes-group textarea {
+  width: 100%;
+  margin-top: 0.5rem; /* Add space below the label */
+  min-height: 120px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 0.8rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
 /* Footer */
 .app-footer {
   padding: 2rem 0 1rem;
@@ -261,11 +311,12 @@ main {
   color: var(--text-primary);
 }
 
-.mood-trend {
-  background-color: var(--bg-secondary);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+.form-group label.section-label {
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.8rem;
+  color: var(--text-primary);
 }
 
 /* Empty state container - Add spacing from edges */
@@ -296,6 +347,50 @@ main {
 .empty-state .btn {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
+}
+
+.mood-trend {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.mood-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0 2rem 0;
+}
+
+.mood-option {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  flex: 0 0 auto; /* Prevent stretching */
+}
+
+.mood-option input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+.mood-option label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* For smaller screens, adjust the wrap behavior */
+@media (max-width: 768px) {
+  .mood-options {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .mood-option {
+    flex: 0 0 calc(50% - 1rem); /* Two columns on mobile */
+  }
 }
 
 /* Responsive design */
