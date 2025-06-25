@@ -54,16 +54,17 @@ body {
   font-weight: 500;
 }
 
-/* Page header - Updated with more spacing and larger content */
+/* Page header - Updated with rounded corners */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2.5rem;
-  padding: 1.5rem 2rem 1.5rem 2rem;  /* Added horizontal padding */
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
-  margin-left: 1rem;  /* Added margin from left edge */
-  margin-right: 1rem; /* Added margin from right edge for symmetry */
+  border-radius: 8px; /* Add rounded corners */
+  padding: 1rem 1.5rem; /* Add some padding on all sides */
+  margin-left: 1rem; /* Added margin from left edge */
 }
 
 /* Page header title - New style for the heading inside page-header */
@@ -265,6 +266,36 @@ main {
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
+}
+
+/* Empty state container - Add spacing from edges */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  margin: 2rem 1rem;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px dashed var(--border-color);
+}
+
+/* Empty state heading */
+.empty-state h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+/* Empty state message */
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+/* Empty state action button */
+.empty-state .btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
 }
 
 /* Responsive design */
