@@ -54,16 +54,69 @@ body {
   font-weight: 500;
 }
 
-/* Page header */
+/* Page header - Updated with more spacing and larger content */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  margin-bottom: 2.5rem;
+  padding: 1.5rem 2rem 1.5rem 2rem;  /* Added horizontal padding */
   border-bottom: 1px solid var(--border-color);
+  margin-left: 1rem;  /* Added margin from left edge */
+  margin-right: 1rem; /* Added margin from right edge for symmetry */
 }
 
+/* Page header title - New style for the heading inside page-header */
+.page-header h1,
+.page-header h2 {
+  font-size: 2.2rem;  /* Larger font size */
+  margin: 0;
+  font-weight: 600;
+  color: var(--green-primary);
+}
+
+/* Page header description - New style for any paragraph inside page-header */
+.page-header p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0 0 0;
+}
+
+/* Page header actions - For any buttons or action items in the header */
+.page-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* Page header with subtitle variation */
+.page-header.with-subtitle {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .page-header {
+    padding: 1rem 1rem 1rem 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .page-header h1,
+  .page-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .page-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+  }
+}
 /* Main content */
 main {
   flex: 1;
