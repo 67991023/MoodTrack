@@ -381,6 +381,39 @@ input[type="range"] {
   cursor: pointer;
 }
 
+/* Logo image styling */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--green-primary);
+}
+
+.logo-image {
+  height: 40px; /* Adjust based on your logo size */
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Responsive logo sizing */
+@media (max-width: 768px) {
+  .logo-image {
+    height: 32px; /* Slightly smaller on mobile */
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-text {
+    display: none;
+  }
+}
+
 /* For smaller screens, adjust the wrap behavior */
 @media (max-width: 768px) {
   .mood-options {
